@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRI:CULTURE — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <style>
+
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:#f8f8fb;font-family:'Freesentation',Arial,sans-serif}
+@font-face{font-family:'Freesentation';src:local('Freesentation Regular'),local('Freesentation'),url('./Freesentation-4Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Freesentation';src:local('Freesentation Bold'),url('./Freesentation-7Bold.ttf') format('truetype');font-weight:700;font-display:swap}
+button{font:inherit}.viewport{position:fixed;inset:0;overflow:hidden}.home{position:absolute;width:1600px;height:900px;left:0;top:0;transform-origin:0 0;isolation:isolate;background:#f8f8fb;overflow:hidden}
+#mapCanvas{position:absolute;inset:0;width:1600px;height:900px;z-index:-2;pointer-events:none}.soft-light{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,.13) 56%,rgba(255,255,255,.3))}
+.brand{position:absolute;left:84px;top:280px;margin:0;color:#050505;font-family:'Anton',Impact,'Arial Narrow',sans-serif;font-size:154px;font-weight:400;line-height:1.02;letter-spacing:-.025em;pointer-events:none;user-select:none}.brand span{display:block;white-space:nowrap}
+.menu-circle{position:absolute;display:flex;align-items:center;justify-content:center;width:186px;height:186px;border-radius:50%;border:1px solid rgba(255,255,255,.7);background:rgba(204,204,210,.34);box-shadow:inset 0 1px 2px rgba(255,255,255,.85),0 8px 32px rgba(45,50,80,.08);backdrop-filter:blur(14px) saturate(145%);-webkit-backdrop-filter:blur(14px) saturate(145%);color:#050505;cursor:pointer;transition:background .28s ease,box-shadow .28s ease}
+.menu-circle.learn{left:1280px;top:236px}.menu-circle.quiz{left:1280px;top:454px}.menu-circle.try{left:1130px;top:628px}
+.menu-circle.learn .number{transform:translate(-39px,-35px)}.menu-circle.quiz .number{transform:translate(38px,27px)}.menu-circle.try .number{transform:translate(-26px,43px)}.menu-circle .number{font-family:'Anton',Impact,sans-serif;font-size:133px;line-height:1;transition:opacity .25s ease,transform .25s ease}.menu-circle .word{font-family:'Freesentation',Arial,sans-serif;font-weight:700;font-size:39px;letter-spacing:-.045em;position:absolute;opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease}
+.menu-circle:hover,.menu-circle:focus-visible{background:rgba(255,255,255,.48);box-shadow:inset 0 1px 2px rgba(255,255,255,.95),0 12px 36px rgba(40,60,100,.14)}.menu-circle:hover .number,.menu-circle:focus-visible .number{opacity:0;transform:scale(.86)}.menu-circle:hover .word,.menu-circle:focus-visible .word{opacity:1;transform:translateY(0)}
+.top-tools{position:absolute;right:66px;top:60px;display:flex;gap:14px}.small-circle{width:51px;height:51px;border-radius:50%;border:1px solid rgba(255,255,255,.65);background:rgba(210,210,215,.4);box-shadow:inset 0 1px 2px rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hint{display:none}@media(prefers-reduced-motion:reduce){.menu-circle,.menu-circle .number,.menu-circle .word{transition:none}}
+
+
+#learnPage{position:absolute;inset:0;background:#fff;z-index:10;display:none;font-family:'Freesentation',Arial,sans-serif}
+#learnPage.is-visible{display:block}
+.learn-controls{position:absolute;left:60px;top:60px;display:flex;gap:15px}
+.learn-controls button{width:51px;height:51px;border-radius:50%;border:1px solid #fff9;background:#d5d5d5bb;backdrop-filter:blur(12px);color:#050505;cursor:pointer;font-size:23px}
+.learn-title{position:absolute;top:108px;left:0;right:0;text-align:center;margin:0;font:700 43px 'Freesentation',Arial,sans-serif;color:#050505}
+.learn-grid{position:absolute;left:198px;right:195px;top:215px;display:grid;grid-template-columns:590px 1fr;column-gap:82px;align-items:center}
+.city-orb{display:block;position:relative;width:570px;height:570px;border-radius:50%;border:0;padding:0;cursor:crosshair;overflow:hidden;background:#c5d9ee;box-shadow:0 0 0 1px #ddd5}
+.city-orb canvas{display:block;width:100%;height:100%;border-radius:50%}
+.city-orb:focus-visible{outline:4px solid #ff00bb;outline-offset:6px}
+.orb-help{font:700 16px 'Freesentation',sans-serif;color:#050505;text-align:center;margin-top:13px}
+.learn-copy{font:400 20.5px/1.58 'Freesentation',Arial,sans-serif;color:#050505;letter-spacing:-.025em;word-break:keep-all;overflow-wrap:normal;line-break:strict}
+.learn-copy p{margin:0 0 31px}.learn-copy p:last-child{margin-bottom:0}
+.country-arrow{position:absolute;top:455px;width:68px;height:95px;border:0;background:transparent;cursor:pointer;z-index:3}
+.country-arrow.prev{left:40px}.country-arrow.next{right:40px}
+.country-arrow::before{content:'';display:block;width:41px;height:41px;border-left:9px solid #d4d4d4;border-bottom:9px solid #d4d4d4;border-radius:4px;transform:rotate(45deg);margin-left:15px}
+.country-arrow.next::before{transform:rotate(225deg);margin-left:0}
+.country-arrow:hover::before{border-color:#050505}
+#sphereModal{position:absolute;inset:0;background:#0b1021ed;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:25}
+#sphereModal.open{display:flex}
+#sphereModal .city-orb{width:710px;height:710px;cursor:crosshair}
+.modal-close{position:absolute;top:34px;right:43px;color:white;border:0;background:none;font-size:46px;cursor:pointer}
+.modal-label{color:#fff;font:700 19px 'Freesentation',sans-serif;margin-top:14px}
+
+#quizPage{display:none;position:absolute;inset:0;z-index:15;background:#fff;color:#080808;font-family:'Freesentation',sans-serif}
+#quizPage.visible{display:block}
+.quiz-top-left,.quiz-top-right{position:absolute;top:60px;display:flex;gap:14px;z-index:4}
+.quiz-top-left{left:60px}.quiz-top-right{right:66px}
+.quiz-dot{width:51px;height:51px;border:0;border-radius:50%;background:#d6d6d6bb;cursor:pointer}
+.quiz-top-right .quiz-dot{cursor:default}
+.quiz-intro{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:2;pointer-events:none}
+.quiz-intro h2{font:700 43px/1.42 'Freesentation',sans-serif;text-align:center;margin:0 0 39px;word-break:keep-all}
+.quiz-pill{background:#f5f5f5;border:1px solid #f0f0f0;box-shadow:0 2px 3px #00000013;border-radius:40px;padding:11px 42px;min-width:158px;font:700 29px 'Freesentation',sans-serif;color:#050505;cursor:pointer;pointer-events:auto}
+.quiz-pill:hover{background:#e8e8e8}
+#quizReveal{position:absolute;inset:0;width:1600px;height:900px;pointer-events:none;z-index:1}
+.quiz-playing{position:absolute;inset:0;display:none;flex-direction:column;align-items:center}
+.quiz-playing.visible{display:flex}
+.quiz-question{font:700 44px 'Freesentation',sans-serif;margin:105px 0 31px}
+.quiz-image{width:820px;height:470px;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#b0b0b0;font:700 32px 'Freesentation',sans-serif}
+.quiz-progress{position:absolute;left:60px;bottom:55px;font:400 20px 'Freesentation',sans-serif;color:#888}
+.quiz-select{position:relative;width:950px;height:74px;margin-top:27px;touch-action:none}
+.quiz-track{position:absolute;top:16px;left:0;right:0;height:4px;border-radius:4px;background:#dedede}
+.quiz-knob{position:absolute;top:2px;left:0;width:32px;height:32px;border-radius:50%;background:#efefef;box-shadow:0 2px 6px #0001;transform:translateX(-50%);cursor:grab;touch-action:none}
+.quiz-knob:active{cursor:grabbing}
+.quiz-choices{position:absolute;left:0;right:0;top:39px;display:flex;justify-content:space-between;font:700 20px 'Freesentation',sans-serif}
+.quiz-choices label{cursor:pointer;min-width:110px;text-align:center}
+.quiz-choices label:first-child{text-align:left}.quiz-choices label:last-child{text-align:right}
+.quiz-next{margin-top:15px}
+.quiz-count{position:absolute;right:65px;bottom:55px;font:400 20px 'Freesentation',sans-serif;color:#777}
+
+/* QUIZ / V9 — thermal neon treatment */
+.quiz-image{width:900px;height:540px;max-width:none;overflow:hidden;background:#d8d8d8;position:relative}
+.quiz-image canvas{width:100%;height:100%;display:block}
+.quiz-question{margin:91px 0 19px;font-size:40px}
+.quiz-select{margin-top:20px}
+.quiz-next{margin-top:10px}
+.quiz-import{position:absolute;left:50%;top:565px;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:12px;flex-direction:column;pointer-events:auto}
+.quiz-import button{font:700 17px 'Freesentation',sans-serif;background:#f0f0f0;border:1px solid #ddd;border-radius:24px;padding:11px 23px;cursor:pointer;color:#111}
+.quiz-import p{margin:0;text-align:center;font:400 15px/1.45 'Freesentation',sans-serif;color:#777}
+.quiz-intro h2{margin-bottom:32px}
+.quiz-status{position:absolute;top:615px;left:0;right:0;text-align:center;font:400 16px 'Freesentation',sans-serif;color:#666;z-index:3;pointer-events:none}
+.quiz-image .image-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#777;font:400 19px 'Freesentation',sans-serif}
+
+/* TRI extensions: added screens, no changes to original HOME / LEARN content */
+.tri-screen{position:absolute;inset:0;z-index:35;background:#fff;display:none;color:#080808;font-family:'Freesentation',Arial,sans-serif}
+.tri-screen.visible{display:block}
+.tri-screen .tri-top{position:absolute;top:34px;left:40px;right:40px;display:flex;justify-content:space-between;z-index:5}
+.tri-top .pair{display:flex;gap:14px}
+.tri-dot{width:51px;height:51px;border:0;border-radius:50%;background:#d6d6d6;cursor:pointer}
+.tri-top .pair:last-child .tri-dot{cursor:default}
+.tri-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;pointer-events:none}
+.tri-center h2{font-size:43px;line-height:1.72;font-weight:700;letter-spacing:-.045em;margin:0;white-space:pre-line}
+.tri-center .quiz-pill{pointer-events:auto;margin-top:39px}
+#learnIntro{z-index:32;opacity:0;transition:opacity .55s ease}
+#learnIntro.visible{opacity:1}
+#learnIntro.fade-out{opacity:0}
+#tryIntro{z-index:32}
+.tri-reveal{position:absolute;inset:0;width:1600px;height:900px;pointer-events:none;z-index:1}
+#quizResult{z-index:22}
+.result-layout{position:absolute;left:148px;right:154px;top:177px;bottom:93px;display:grid;grid-template-columns:700px 1fr;gap:95px}
+.result-answers{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(5,1fr);grid-auto-flow:column;gap:18px 24px}
+.result-item{display:flex;align-items:center;gap:22px;min-width:0}
+.result-photo{width:155px;height:94px;flex:none;object-fit:cover;background:#dadada}
+.result-caption{font-size:20px;font-weight:700;color:#ff00b7;white-space:nowrap}
+.result-number{font-size:13px;color:#999;display:block;margin-bottom:3px}
+.result-score-area{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.score-ball{width:335px;height:335px;border-radius:50%;position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 48% 12%,#f7c5f8 0%,#b1ead5 29%,#26a5ef 60%,#88e3e4 84%,#f1c7e7 100%);box-shadow:inset 0 8px 25px #fff9,inset 0 -12px 22px #8a78ce66,0 2px 7px #9993}
+.score-ball::before{content:'';position:absolute;inset:-35%;background:radial-gradient(ellipse at 26% 35%,#ffb5ecaa,transparent 35%),radial-gradient(ellipse at 64% 65%,#0489f9cc,transparent 45%),radial-gradient(ellipse at 30% 78%,#5ee5d9bb,transparent 45%);filter:blur(25px);animation:gel-drift 7s ease-in-out infinite alternate}
+.score-ball::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 50% -5%,#fff9,transparent 45%),radial-gradient(ellipse at 50% 115%,#fff9,transparent 30%);box-shadow:inset 0 0 0 4px #fff6;pointer-events:none}
+.score-label{position:absolute;z-index:2;left:50%;top:36%;transform:translateX(-50%);border-radius:50%;background:#ff00b7;color:#fff;min-width:114px;height:114px;display:flex;align-items:center;justify-content:center;font:700 68px 'Anton',Arial,sans-serif}
+@keyframes gel-drift{0%{transform:translate(-8%,5%) rotate(0deg) scale(1)}50%{transform:translate(8%,-5%) rotate(85deg) scale(1.1)}100%{transform:translate(-2%,6%) rotate(170deg) scale(1.04)}}
+.result-score-area h2{font-size:43px;color:#ff00b7;margin:0 0 16px}
+.result-score-area .quiz-pill{color:#ff00b7}
+#tryCamera{z-index:38;background:#fff}
+#tryVideo,#tryOverlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#tryOverlay{pointer-events:none}
+.try-camera-controls{position:absolute;right:68px;top:150px;z-index:5;display:flex;flex-direction:column;gap:23px}
+.try-filter{width:114px;height:114px;border:0;border-radius:50%;background:#d7d7d7e8;display:grid;place-items:center;cursor:pointer;position:relative;color:#fff;transition:background .2s,transform .2s}
+.try-filter:hover,.try-filter:focus-visible{background:#fff;transform:scale(1.045);color:#111}
+.try-filter.selected{box-shadow:0 0 0 3px #ff00b7}
+.try-filter .filter-name{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;color:#111;font-weight:700;font-size:26px;opacity:0;transition:opacity .2s;background:#d7d7d7}
+.try-filter:hover .filter-name,.try-filter:focus-visible .filter-name{opacity:1}
+.try-filter svg{width:70px;height:70px}
+.camera-top{position:absolute;left:40px;top:34px;z-index:6;display:flex;gap:14px}
+.camera-bottom{position:absolute;left:50%;bottom:45px;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:20px}
+.camera-capture{width:76px;height:76px;border-radius:50%;border:6px solid #fff;background:#ffffffa8;box-shadow:0 0 0 2px #7778;cursor:pointer}
+.camera-status{position:absolute;bottom:32px;left:40px;background:#ffffffd9;border-radius:24px;padding:10px 18px;color:#333;font-size:16px;z-index:5;max-width:440px}
+.camera-intensity{position:absolute;right:40px;bottom:35px;z-index:5;background:#ffffffe6;border-radius:24px;padding:10px 16px;display:flex;gap:12px;align-items:center;font-weight:700}
+.camera-intensity input{width:150px;accent-color:#ff00b7}
+@media(prefers-reduced-motion:reduce){.score-ball::before{animation:none}}
+
+/* Submission-ready simplified visuals */
+#cityOrb{cursor:default}#cityOrb canvas{border-radius:50%}
+.orb-help{visibility:hidden}
+#quizPhoto{object-fit:cover}
+#quizImageState{background:#e6e6e6}
+.learn-controls button svg,.quiz-top-left button svg,.tri-top button svg,.camera-top button svg{width:25px;height:25px;stroke:#222;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.learn-controls button,.quiz-top-left button,.tri-top button,.camera-top button{display:grid;place-items:center}
+
+/* TRI final polish: white canvas, black typography, circular iridescent orb */
+.result-caption,.result-score-area h2,.result-score-area .quiz-pill,.score-label{color:#111!important}
+.score-label{background:rgba(255,255,255,.55)!important;box-shadow:0 1px 15px #ffffff70;color:#111!important}
+.score-ball{background:radial-gradient(ellipse at 45% 20%,#f9d7f8 0%,#b9e8df 28%,#47b7ee 63%,#9ce5ed 85%,#f4d5f1 100%);box-shadow:inset 0 10px 24px #fff9,inset 0 -12px 28px #8790d65c,0 2px 8px #9c9c9c44}
+.score-ball::before{border-radius:50%}
+.result-score-area{background:transparent!important}
+#quizResult,.result-layout,.result-score-area{background:#fff0!important}
+.tri-back svg{width:25px;height:25px;stroke:#222;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tri-back{display:grid;place-items:center}
+#quizResult .result-score-area h2{color:#111!important}
+#quizResult .score-ball{flex:none}
+/* remove neon pink in text throughout the site without affecting image effects */
+.quiz-choices,.quiz-choices label,.quiz-question,.quiz-pill,.result-caption,.tri-center h2,.filter-name,.country-title,.country-copy,.learn-copy,.menu-circle .word{color:#111!important}
+#quizResult .result-score-area .quiz-pill{color:#111!important}
+#cityOrb,#modalOrb{border-radius:50%;overflow:hidden}
+#cityOrb canvas,#modalOrb canvas{border-radius:50%}
+/* no rectangle behind the score orb */
+#quizResult .score-ball{background-clip:padding-box}
+.audio-toggle{position:fixed;right:20px;bottom:18px;z-index:100;border:1px solid #dedede;background:#fffdfdec;color:#111;border-radius:22px;padding:8px 13px;font:600 12px Arial,sans-serif;cursor:pointer}
+
+/* Final isolation: hide quiz completely beneath results; only one nav pair. */
+#quizPage:not(.visible){display:none!important}
+#quizResult.visible{display:block!important;background:#fff!important;z-index:70!important;isolation:isolate}
+#quizResult .tri-top{z-index:80}
+#quizResult .tri-top .pair{gap:14px}
+#quizResult .result-layout{z-index:1}
+#quizResult .score-ball{overflow:hidden!important;clip-path:circle(50% at 50% 50%);-webkit-clip-path:circle(50% at 50% 50%);background:radial-gradient(ellipse at 26% 18%,#ffe5f8 0%,#e5e1fb 23%,#a8eae7 47%,#4ebcf5 68%,#c5d4ff 85%,#fce8fc 100%)!important;box-shadow:inset 0 8px 22px #fff9,inset 0 -10px 25px #a7a1d577!important}
+#quizResult .score-ball::before{inset:-30%;border-radius:50%;background:radial-gradient(ellipse at 18% 32%,#f8c5f9b9,transparent 40%),radial-gradient(ellipse at 70% 56%,#009df3cc,transparent 48%),radial-gradient(ellipse at 25% 78%,#87f9e9d1,transparent 44%);filter:blur(24px);animation:gel-drift 7s ease-in-out infinite alternate}
+#quizResult .score-ball::after{box-shadow:inset 0 0 0 3px #fff8,inset 0 12px 24px #fff7!important}
+#quizResult .score-label{background:transparent!important;box-shadow:none!important;color:#080808!important;top:50%;left:50%;transform:translate(-50%,-50%);font-size:92px}
+#quizResult .result-caption,#quizResult .result-score-area h2,#quizResult .result-score-area button{color:#111!important}
+#quizResult .result-score-area{background:transparent!important}
+
+/* Final interactive polish: ambient cursor ripples, no layout changes */
+#learnPage,#quizResult{isolation:isolate}
+.tri-ambient{position:absolute;inset:0;width:1600px;height:900px;z-index:0;pointer-events:none;opacity:.78}
+#learnPage .learn-controls,#learnPage .learn-title,#learnPage .learn-grid,#learnPage .country-arrow,#learnPage #sphereModal{z-index:2}
+#learnPage .learn-controls,#learnPage .learn-title,#learnPage .learn-grid{position:absolute}
+#quizResult .result-layout{z-index:2}
+#quizResult .tri-top{z-index:5}
+#quizResult .score-ball{cursor:pointer;transition:transform 1.35s cubic-bezier(.2,.72,.19,1),box-shadow .35s ease;will-change:transform}
+#quizResult .score-ball:hover{transform:rotate(360deg) scale(1.045);box-shadow:inset 0 8px 22px #fff9,inset 0 -10px 25px #a7a1d577,0 8px 30px #87baf866!important}
+#quizResult .score-ball .score-label{transition:transform 1.35s cubic-bezier(.2,.72,.19,1)}
+#quizResult .score-ball:hover .score-label{transform:translate(-50%,-50%) rotate(-360deg)}
+@media(prefers-reduced-motion:reduce){#quizResult .score-ball,#quizResult .score-ball .score-label{transition:none}}
+</style>
+</head>
+<body>
+<div class="viewport"><main class="home" aria-label="TRI:CULTURE 홈 화면">
+<canvas id="mapCanvas" aria-hidden="true"></canvas><div class="soft-light" aria-hidden="true"></div>
+<h1 class="brand"><span>TRI</span><span>:CULTURE</span></h1>
+<nav class="menu" aria-label="메인 메뉴">
+<button type="button" class="menu-circle learn" aria-label="LEARN"><span class="number">1</span><span class="word">LEARN</span></button>
+<button type="button" class="menu-circle quiz" aria-label="QUIZ"><span class="number">2</span><span class="word">QUIZ</span></button>
+<button type="button" class="menu-circle try" aria-label="TRY"><span class="number">3</span><span class="word">TRY</span></button>
+</nav>
+
+<section id="learnPage" aria-label="나라별 소개"><canvas class="tri-ambient" id="learnAmbient" width="1600" height="900" aria-hidden="true"></canvas>
+ <div class="learn-controls"><button id="backHome" title="홈으로" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button id="backHome2" title="홈으로 돌아가기" aria-label="뒤로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div>
+ <h2 class="learn-title" id="countryTitle">ABOUT KOREA</h2>
+ <button class="country-arrow prev" id="countryPrev" aria-label="이전 나라"></button>
+ <button class="country-arrow next" id="countryNext" aria-label="다음 나라"></button>
+ <div class="learn-grid"><div>
+   <button class="city-orb" id="cityOrb" aria-label="수도 파노라마, 마우스로 움직이고 클릭하면 확대"><canvas width="570" height="570"></canvas></button>
+   <div class="orb-help">MOVE TO EXPLORE · CLICK TO ENLARGE</div>
+ </div><div class="learn-copy" id="countryCopy"></div></div>
+ <div id="sphereModal" role="dialog" aria-modal="true" aria-label="확대된 수도 전경">
+  <button class="modal-close" id="modalClose" aria-label="닫기">×</button>
+  <div class="city-orb" id="modalOrb"><canvas width="710" height="710"></canvas></div>
+  <div class="modal-label">MOVE YOUR MOUSE TO EXPLORE · ESC TO CLOSE</div>
+ </div>
+</section>
+
+<section id="quizPage" aria-label="나라 맞히기 퀴즈">
+ <div class="quiz-top-left"><button class="quiz-dot" id="quizHome" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button class="quiz-dot" id="quizBack" aria-label="퀴즈 설명으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div>
+ 
+ <div class="quiz-intro" id="quizIntro"><h2>한국, 중국 그리고 일본 세 나라 중<br>어느 나라의 것인지 맞혀보세요!</h2><button class="quiz-pill" id="quizStart">START</button></div>
+ <div class="quiz-status" id="quizStatus"></div><canvas id="quizReveal" width="1600" height="900"></canvas>
+ <div class="quiz-playing" id="quizPlaying">
+  <h2 class="quiz-question">어느 나라의 것일까요?</h2>
+  <div class="quiz-image" id="quizImage" aria-label="열화상 스타일로 편집된 문화재 사진"><img id="quizPhoto" alt="퀴즈 사진" style="width:100%;height:100%;object-fit:cover;display:block"><div class="image-state" id="quizImageState">사진을 불러오는 중…</div></div>
+  <div class="quiz-select" id="quizSelect"><div class="quiz-track"></div><div class="quiz-knob" id="quizKnob" role="slider" tabindex="0" aria-label="나라 선택" aria-valuemin="0" aria-valuemax="2" aria-valuenow="1"></div>
+   <div class="quiz-choices"><label data-choice="0">CHINA</label><label data-choice="1">KOREA</label><label data-choice="2">JAPAN</label></div>
+  </div><button class="quiz-pill quiz-next" id="quizNext">NEXT</button>
+  <div class="quiz-progress" id="quizProgress">01 / 10</div><div class="quiz-count" id="quizCount"></div>
+ </div>
+</section>
+
+<section id="learnIntro" class="tri-screen" aria-label="LEARN 안내"><div class="tri-top"><div class="pair"><button class="tri-dot" id="learnIntroHome" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button class="tri-dot tri-back" aria-label="뒤로가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div></div><canvas class="tri-reveal" id="learnReveal" width="1600" height="900"></canvas><div class="tri-center"><h2>한국, 중국 그리고 일본
+세 나라에 대해서
+공부하는 시간을 가져요.</h2></div></section>
+<section id="tryIntro" class="tri-screen" aria-label="TRY 안내"><div class="tri-top"><div class="pair"><button class="tri-dot" id="tryIntroHome" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button class="tri-dot tri-back" aria-label="뒤로가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div></div><canvas class="tri-reveal" id="tryReveal" width="1600" height="900"></canvas><div class="tri-center"><h2>한국, 중국 그리고 일본의
+메이크업을 체험하고 사진을 찍어요.</h2><button class="quiz-pill" id="tryStart">START</button></div></section>
+<section id="quizResult" class="tri-screen" aria-label="퀴즈 결과"><canvas class="tri-ambient" id="resultAmbient" width="1600" height="900" aria-hidden="true"></canvas><div class="tri-top"><div class="pair"><button class="tri-dot" id="resultHome" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button class="tri-dot tri-back" aria-label="뒤로가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div></div><div class="result-layout"><div id="resultAnswers" class="result-answers"></div><div class="result-score-area"><div class="score-ball"><div class="score-label" id="resultScore">0</div></div><h2>점수 공개!</h2><button class="quiz-pill" id="resultReplay">RE?</button></div></div></section>
+<section id="tryCamera" class="tri-screen" aria-label="실시간 메이크업 체험"><video id="tryVideo" autoplay muted playsinline></video><canvas id="tryOverlay"></canvas><div class="camera-top"><button class="tri-dot" id="cameraHome" aria-label="홈으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5M5.5 9.5V21h13V9.5M9 21v-7h6v7"/></svg></button><button class="tri-dot" id="cameraBack" aria-label="TRY 안내로 돌아가기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4-8 8 8 8M7 12h14"/></svg></button></div><div class="try-camera-controls">
+<button class="try-filter" data-style="cn" aria-label="CHINA 필터"><svg viewBox="0 0 100 100"><path d="M50 9 L61 37 L91 37 L67 56 L76 86 L50 68 L24 86 L33 56 L9 37 L39 37Z" fill="currentColor"/></svg><span class="filter-name">CHINA</span></button>
+<button class="try-filter selected" data-style="kr" aria-label="KOREA 필터"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="white"/><path d="M8 50 C8 17 42 12 50 31 C58 50 92 45 92 50 A42 42 0 0 1 8 50" fill="#e9e9e9" stroke="#ddd" stroke-width="1"/></svg><span class="filter-name">KOREA</span></button>
+<button class="try-filter" data-style="jp" aria-label="JAPAN 필터"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="currentColor"/></svg><span class="filter-name">JAPAN</span></button>
+</div><div class="camera-bottom"><button class="camera-capture" id="cameraCapture" aria-label="사진 찍기"></button></div><div class="camera-status" id="cameraStatus" role="status">카메라 준비 중…</div><label class="camera-intensity">강도 <input id="cameraIntensity" type="range" min="0" max="100" value="58"><output id="cameraValue">58%</output></label></section>
+</main></div>
+<script>
+const LAND_DOTS = [[0.0075,0.01889],[0.01812,0.01889],[0.02875,0.01889],[0.03938,0.01889],[0.05,0.01889],[0.06062,0.01889],[0.07125,0.01889],[0.08188,0.01889],[0.0925,0.01889],[0.10312,0.01889],[0.11375,0.01889],[0.12437,0.01889],[0.135,0.01889],[0.14563,0.01889],[0.15625,0.01889],[0.16687,0.01889],[0.1775,0.01889],[0.18812,0.01889],[0.19875,0.01889],[0.20938,0.01889],[0.22,0.01889],[0.23062,0.01889],[0.24125,0.01889],[0.25188,0.01889],[0.2625,0.01889],[0.27313,0.01889],[0.28375,0.01889],[0.29437,0.01889],[0.305,0.01889],[0.31562,0.01889],[0.32625,0.01889],[0.33687,0.01889],[0.3475,0.01889],[0.35813,0.01889],[0.36875,0.01889],[0.37938,0.01889],[0.39,0.01889],[0.40063,0.01889],[0.41125,0.01889],[0.42188,0.01889],[0.4325,0.01889],[0.44312,0.01889],[0.45375,0.01889],[0.46437,0.01889],[0.475,0.01889],[0.48562,0.01889],[0.49625,0.01889],[0.50687,0.01889],[0.5175,0.01889],[0.52812,0.01889],[0.53875,0.01889],[0.54937,0.01889],[0.56,0.01889],[0.57063,0.01889],[0.58125,0.01889],[0.59188,0.01889],[0.6025,0.01889],[0.61313,0.01889],[0.62375,0.01889],[0.63438,0.01889],[0.645,0.01889],[0.65563,0.01889],[0.66625,0.01889],[0.67688,0.01889],[0.6875,0.01889],[0.69812,0.01889],[0.70875,0.01889],[0.71937,0.01889],[0.73,0.01889],[0.74062,0.01889],[0.75125,0.01889],[0.76187,0.01889],[0.7725,0.01889],[0.78312,0.01889],[0.79375,0.01889],[0.80437,0.01889],[0.0075,0.03778],[0.01812,0.03778],[0.02875,0.03778],[0.03938,0.03778],[0.05,0.03778],[0.06062,0.03778],[0.07125,0.03778],[0.08188,0.03778],[0.0925,0.03778],[0.10312,0.03778],[0.11375,0.03778],[0.12437,0.03778],[0.135,0.03778],[0.14563,0.03778],[0.15625,0.03778],[0.16687,0.03778],[0.1775,0.03778],[0.18812,0.03778],[0.19875,0.03778],[0.20938,0.03778],[0.22,0.03778],[0.23062,0.03778],[0.24125,0.03778],[0.25188,0.03778],[0.2625,0.03778],[0.27313,0.03778],[0.28375,0.03778],[0.29437,0.03778],[0.305,0.03778],[0.31562,0.03778],[0.32625,0.03778],[0.33687,0.03778],[0.3475,0.03778],[0.35813,0.03778],[0.36875,0.03778],[0.37938,0.03778],[0.39,0.03778],[0.40063,0.03778],[0.41125,0.03778],[0.42188,0.03778],[0.4325,0.03778],[0.44312,0.03778],[0.45375,0.03778],[0.46437,0.03778],[0.475,0.03778],[0.48562,0.03778],[0.49625,0.03778],[0.50687,0.03778],[0.5175,0.03778],[0.52812,0.03778],[0.53875,0.03778],[0.54937,0.03778],[0.56,0.03778],[0.57063,0.03778],[0.58125,0.03778],[0.59188,0.03778],[0.6025,0.03778],[0.61313,0.03778],[0.62375,0.03778],[0.63438,0.03778],[0.645,0.03778],[0.65563,0.03778],[0.66625,0.03778],[0.67688,0.03778],[0.6875,0.03778],[0.69812,0.03778],[0.70875,0.03778],[0.71937,0.03778],[0.73,0.03778],[0.74062,0.03778],[0.75125,0.03778],[0.76187,0.03778],[0.7725,0.03778],[0.0075,0.05667],[0.01812,0.05667],[0.02875,0.05667],[0.03938,0.05667],[0.05,0.05667],[0.06062,0.05667],[0.07125,0.05667],[0.08188,0.05667],[0.0925,0.05667],[0.10312,0.05667],[0.11375,0.05667],[0.12437,0.05667],[0.135,0.05667],[0.14563,0.05667],[0.15625,0.05667],[0.16687,0.05667],[0.1775,0.05667],[0.18812,0.05667],[0.19875,0.05667],[0.20938,0.05667],[0.22,0.05667],[0.23062,0.05667],[0.24125,0.05667],[0.25188,0.05667],[0.2625,0.05667],[0.27313,0.05667],[0.28375,0.05667],[0.29437,0.05667],[0.305,0.05667],[0.31562,0.05667],[0.32625,0.05667],[0.33687,0.05667],[0.3475,0.05667],[0.35813,0.05667],[0.36875,0.05667],[0.37938,0.05667],[0.39,0.05667],[0.40063,0.05667],[0.41125,0.05667],[0.42188,0.05667],[0.4325,0.05667],[0.44312,0.05667],[0.45375,0.05667],[0.46437,0.05667],[0.475,0.05667],[0.48562,0.05667],[0.49625,0.05667],[0.50687,0.05667],[0.5175,0.05667],[0.52812,0.05667],[0.53875,0.05667],[0.54937,0.05667],[0.56,0.05667],[0.57063,0.05667],[0.58125,0.05667],[0.59188,0.05667],[0.6025,0.05667],[0.61313,0.05667],[0.62375,0.05667],[0.63438,0.05667],[0.645,0.05667],[0.65563,0.05667],[0.66625,0.05667],[0.67688,0.05667],[0.6875,0.05667],[0.69812,0.05667],[0.70875,0.05667],[0.71937,0.05667],[0.73,0.05667],[0.74062,0.05667],[0.75125,0.05667],[0.0075,0.07556],[0.01812,0.07556],[0.02875,0.07556],[0.03938,0.07556],[0.05,0.07556],[0.06062,0.07556],[0.07125,0.07556],[0.08188,0.07556],[0.0925,0.07556],[0.10312,0.07556],[0.11375,0.07556],[0.12437,0.07556],[0.135,0.07556],[0.14563,0.07556],[0.15625,0.07556],[0.16687,0.07556],[0.1775,0.07556],[0.18812,0.07556],[0.19875,0.07556],[0.20938,0.07556],[0.22,0.07556],[0.23062,0.07556],[0.24125,0.07556],[0.25188,0.07556],[0.2625,0.07556],[0.27313,0.07556],[0.28375,0.07556],[0.29437,0.07556],[0.305,0.07556],[0.31562,0.07556],[0.32625,0.07556],[0.33687,0.07556],[0.3475,0.07556],[0.35813,0.07556],[0.36875,0.07556],[0.37938,0.07556],[0.39,0.07556],[0.40063,0.07556],[0.41125,0.07556],[0.42188,0.07556],[0.4325,0.07556],[0.44312,0.07556],[0.45375,0.07556],[0.46437,0.07556],[0.475,0.07556],[0.48562,0.07556],[0.49625,0.07556],[0.50687,0.07556],[0.5175,0.07556],[0.52812,0.07556],[0.53875,0.07556],[0.54937,0.07556],[0.56,0.07556],[0.57063,0.07556],[0.58125,0.07556],[0.59188,0.07556],[0.6025,0.07556],[0.61313,0.07556],[0.62375,0.07556],[0.63438,0.07556],[0.645,0.07556],[0.65563,0.07556],[0.66625,0.07556],[0.67688,0.07556],[0.6875,0.07556],[0.69812,0.07556],[0.70875,0.07556],[0.71937,0.07556],[0.73,0.07556],[0.0075,0.09444],[0.01812,0.09444],[0.02875,0.09444],[0.03938,0.09444],[0.05,0.09444],[0.06062,0.09444],[0.07125,0.09444],[0.08188,0.09444],[0.0925,0.09444],[0.10312,0.09444],[0.11375,0.09444],[0.12437,0.09444],[0.135,0.09444],[0.14563,0.09444],[0.15625,0.09444],[0.16687,0.09444],[0.1775,0.09444],[0.18812,0.09444],[0.19875,0.09444],[0.20938,0.09444],[0.22,0.09444],[0.23062,0.09444],[0.24125,0.09444],[0.25188,0.09444],[0.2625,0.09444],[0.27313,0.09444],[0.28375,0.09444],[0.29437,0.09444],[0.305,0.09444],[0.31562,0.09444],[0.32625,0.09444],[0.33687,0.09444],[0.3475,0.09444],[0.35813,0.09444],[0.36875,0.09444],[0.37938,0.09444],[0.39,0.09444],[0.40063,0.09444],[0.41125,0.09444],[0.42188,0.09444],[0.4325,0.09444],[0.44312,0.09444],[0.45375,0.09444],[0.46437,0.09444],[0.475,0.09444],[0.48562,0.09444],[0.49625,0.09444],[0.50687,0.09444],[0.5175,0.09444],[0.52812,0.09444],[0.53875,0.09444],[0.54937,0.09444],[0.56,0.09444],[0.57063,0.09444],[0.58125,0.09444],[0.59188,0.09444],[0.6025,0.09444],[0.61313,0.09444],[0.62375,0.09444],[0.63438,0.09444],[0.645,0.09444],[0.65563,0.09444],[0.66625,0.09444],[0.67688,0.09444],[0.6875,0.09444],[0.69812,0.09444],[0.70875,0.09444],[0.0075,0.11333],[0.01812,0.11333],[0.02875,0.11333],[0.03938,0.11333],[0.05,0.11333],[0.06062,0.11333],[0.07125,0.11333],[0.08188,0.11333],[0.0925,0.11333],[0.10312,0.11333],[0.11375,0.11333],[0.12437,0.11333],[0.135,0.11333],[0.14563,0.11333],[0.15625,0.11333],[0.16687,0.11333],[0.1775,0.11333],[0.18812,0.11333],[0.19875,0.11333],[0.20938,0.11333],[0.22,0.11333],[0.23062,0.11333],[0.24125,0.11333],[0.25188,0.11333],[0.2625,0.11333],[0.27313,0.11333],[0.28375,0.11333],[0.29437,0.11333],[0.305,0.11333],[0.31562,0.11333],[0.32625,0.11333],[0.33687,0.11333],[0.3475,0.11333],[0.35813,0.11333],[0.36875,0.11333],[0.37938,0.11333],[0.39,0.11333],[0.40063,0.11333],[0.41125,0.11333],[0.42188,0.11333],[0.4325,0.11333],[0.44312,0.11333],[0.45375,0.11333],[0.46437,0.11333],[0.475,0.11333],[0.48562,0.11333],[0.49625,0.11333],[0.50687,0.11333],[0.5175,0.11333],[0.52812,0.11333],[0.53875,0.11333],[0.54937,0.11333],[0.56,0.11333],[0.57063,0.11333],[0.58125,0.11333],[0.59188,0.11333],[0.6025,0.11333],[0.61313,0.11333],[0.62375,0.11333],[0.63438,0.11333],[0.645,0.11333],[0.65563,0.11333],[0.66625,0.11333],[0.67688,0.11333],[0.6875,0.11333],[0.69812,0.11333],[0.70875,0.11333],[0.71937,0.11333],[0.73,0.11333],[0.74062,0.11333],[0.75125,0.11333],[0.7725,0.11333],[0.78312,0.11333],[0.79375,0.11333],[0.83625,0.11333],[0.0075,0.13222],[0.01812,0.13222],[0.02875,0.13222],[0.03938,0.13222],[0.05,0.13222],[0.06062,0.13222],[0.07125,0.13222],[0.08188,0.13222],[0.0925,0.13222],[0.10312,0.13222],[0.11375,0.13222],[0.12437,0.13222],[0.135,0.13222],[0.14563,0.13222],[0.15625,0.13222],[0.16687,0.13222],[0.1775,0.13222],[0.18812,0.13222],[0.19875,0.13222],[0.20938,0.13222],[0.22,0.13222],[0.23062,0.13222],[0.24125,0.13222],[0.25188,0.13222],[0.2625,0.13222],[0.27313,0.13222],[0.28375,0.13222],[0.29437,0.13222],[0.305,0.13222],[0.31562,0.13222],[0.32625,0.13222],[0.33687,0.13222],[0.3475,0.13222],[0.35813,0.13222],[0.36875,0.13222],[0.37938,0.13222],[0.39,0.13222],[0.40063,0.13222],[0.41125,0.13222],[0.42188,0.13222],[0.4325,0.13222],[0.44312,0.13222],[0.45375,0.13222],[0.46437,0.13222],[0.475,0.13222],[0.48562,0.13222],[0.49625,0.13222],[0.50687,0.13222],[0.5175,0.13222],[0.52812,0.13222],[0.53875,0.13222],[0.54937,0.13222],[0.56,0.13222],[0.57063,0.13222],[0.58125,0.13222],[0.59188,0.13222],[0.6025,0.13222],[0.61313,0.13222],[0.62375,0.13222],[0.63438,0.13222],[0.645,0.13222],[0.65563,0.13222],[0.66625,0.13222],[0.67688,0.13222],[0.6875,0.13222],[0.69812,0.13222],[0.70875,0.13222],[0.71937,0.13222],[0.73,0.13222],[0.74062,0.13222],[0.75125,0.13222],[0.76187,0.13222],[0.7725,0.13222],[0.78312,0.13222],[0.79375,0.13222],[0.80437,0.13222],[0.815,0.13222],[0.82563,0.13222],[0.83625,0.13222],[0.0075,0.15111],[0.01812,0.15111],[0.02875,0.15111],[0.03938,0.15111],[0.05,0.15111],[0.06062,0.15111],[0.07125,0.15111],[0.08188,0.15111],[0.0925,0.15111],[0.10312,0.15111],[0.11375,0.15111],[0.12437,0.15111],[0.135,0.15111],[0.14563,0.15111],[0.15625,0.15111],[0.16687,0.15111],[0.1775,0.15111],[0.18812,0.15111],[0.19875,0.15111],[0.20938,0.15111],[0.22,0.15111],[0.23062,0.15111],[0.24125,0.15111],[0.25188,0.15111],[0.2625,0.15111],[0.27313,0.15111],[0.28375,0.15111],[0.29437,0.15111],[0.305,0.15111],[0.31562,0.15111],[0.32625,0.15111],[0.33687,0.15111],[0.3475,0.15111],[0.35813,0.15111],[0.36875,0.15111],[0.37938,0.15111],[0.39,0.15111],[0.40063,0.15111],[0.41125,0.15111],[0.42188,0.15111],[0.4325,0.15111],[0.44312,0.15111],[0.45375,0.15111],[0.46437,0.15111],[0.475,0.15111],[0.48562,0.15111],[0.49625,0.15111],[0.50687,0.15111],[0.5175,0.15111],[0.52812,0.15111],[0.53875,0.15111],[0.54937,0.15111],[0.56,0.15111],[0.57063,0.15111],[0.58125,0.15111],[0.59188,0.15111],[0.6025,0.15111],[0.61313,0.15111],[0.62375,0.15111],[0.63438,0.15111],[0.645,0.15111],[0.65563,0.15111],[0.66625,0.15111],[0.67688,0.15111],[0.6875,0.15111],[0.69812,0.15111],[0.70875,0.15111],[0.71937,0.15111],[0.73,0.15111],[0.74062,0.15111],[0.75125,0.15111],[0.76187,0.15111],[0.7725,0.15111],[0.78312,0.15111],[0.79375,0.15111],[0.80437,0.15111],[0.815,0.15111],[0.82563,0.15111],[0.83625,0.15111],[0.0075,0.17],[0.01812,0.17],[0.02875,0.17],[0.03938,0.17],[0.05,0.17],[0.06062,0.17],[0.07125,0.17],[0.08188,0.17],[0.0925,0.17],[0.10312,0.17],[0.11375,0.17],[0.12437,0.17],[0.135,0.17],[0.14563,0.17],[0.15625,0.17],[0.16687,0.17],[0.1775,0.17],[0.18812,0.17],[0.19875,0.17],[0.20938,0.17],[0.22,0.17],[0.23062,0.17],[0.24125,0.17],[0.25188,0.17],[0.2625,0.17],[0.27313,0.17],[0.28375,0.17],[0.29437,0.17],[0.305,0.17],[0.31562,0.17],[0.32625,0.17],[0.33687,0.17],[0.3475,0.17],[0.35813,0.17],[0.36875,0.17],[0.37938,0.17],[0.39,0.17],[0.40063,0.17],[0.41125,0.17],[0.42188,0.17],[0.4325,0.17],[0.44312,0.17],[0.45375,0.17],[0.46437,0.17],[0.475,0.17],[0.48562,0.17],[0.49625,0.17],[0.50687,0.17],[0.5175,0.17],[0.52812,0.17],[0.53875,0.17],[0.54937,0.17],[0.56,0.17],[0.57063,0.17],[0.58125,0.17],[0.59188,0.17],[0.6025,0.17],[0.61313,0.17],[0.62375,0.17],[0.63438,0.17],[0.645,0.17],[0.65563,0.17],[0.66625,0.17],[0.67688,0.17],[0.6875,0.17],[0.69812,0.17],[0.70875,0.17],[0.71937,0.17],[0.73,0.17],[0.74062,0.17],[0.75125,0.17],[0.76187,0.17],[0.7725,0.17],[0.78312,0.17],[0.79375,0.17],[0.80437,0.17],[0.82563,0.17],[0.83625,0.17],[0.84688,0.17],[0.0075,0.18889],[0.01812,0.18889],[0.02875,0.18889],[0.03938,0.18889],[0.05,0.18889],[0.06062,0.18889],[0.07125,0.18889],[0.08188,0.18889],[0.0925,0.18889],[0.10312,0.18889],[0.11375,0.18889],[0.12437,0.18889],[0.135,0.18889],[0.14563,0.18889],[0.15625,0.18889],[0.16687,0.18889],[0.1775,0.18889],[0.18812,0.18889],[0.19875,0.18889],[0.20938,0.18889],[0.22,0.18889],[0.23062,0.18889],[0.24125,0.18889],[0.25188,0.18889],[0.2625,0.18889],[0.27313,0.18889],[0.28375,0.18889],[0.29437,0.18889],[0.305,0.18889],[0.31562,0.18889],[0.32625,0.18889],[0.33687,0.18889],[0.3475,0.18889],[0.35813,0.18889],[0.36875,0.18889],[0.37938,0.18889],[0.39,0.18889],[0.40063,0.18889],[0.41125,0.18889],[0.42188,0.18889],[0.4325,0.18889],[0.44312,0.18889],[0.45375,0.18889],[0.46437,0.18889],[0.475,0.18889],[0.48562,0.18889],[0.49625,0.18889],[0.50687,0.18889],[0.5175,0.18889],[0.52812,0.18889],[0.53875,0.18889],[0.54937,0.18889],[0.56,0.18889],[0.57063,0.18889],[0.58125,0.18889],[0.59188,0.18889],[0.6025,0.18889],[0.61313,0.18889],[0.62375,0.18889],[0.63438,0.18889],[0.645,0.18889],[0.65563,0.18889],[0.66625,0.18889],[0.67688,0.18889],[0.6875,0.18889],[0.69812,0.18889],[0.70875,0.18889],[0.71937,0.18889],[0.73,0.18889],[0.74062,0.18889],[0.75125,0.18889],[0.76187,0.18889],[0.7725,0.18889],[0.78312,0.18889],[0.79375,0.18889],[0.83625,0.18889],[0.84688,0.18889],[0.0075,0.20778],[0.01812,0.20778],[0.02875,0.20778],[0.03938,0.20778],[0.05,0.20778],[0.06062,0.20778],[0.07125,0.20778],[0.08188,0.20778],[0.0925,0.20778],[0.10312,0.20778],[0.11375,0.20778],[0.12437,0.20778],[0.135,0.20778],[0.14563,0.20778],[0.15625,0.20778],[0.16687,0.20778],[0.1775,0.20778],[0.18812,0.20778],[0.19875,0.20778],[0.20938,0.20778],[0.22,0.20778],[0.23062,0.20778],[0.24125,0.20778],[0.25188,0.20778],[0.2625,0.20778],[0.27313,0.20778],[0.28375,0.20778],[0.29437,0.20778],[0.305,0.20778],[0.31562,0.20778],[0.32625,0.20778],[0.33687,0.20778],[0.3475,0.20778],[0.35813,0.20778],[0.36875,0.20778],[0.37938,0.20778],[0.39,0.20778],[0.40063,0.20778],[0.41125,0.20778],[0.42188,0.20778],[0.4325,0.20778],[0.44312,0.20778],[0.45375,0.20778],[0.46437,0.20778],[0.475,0.20778],[0.48562,0.20778],[0.49625,0.20778],[0.50687,0.20778],[0.5175,0.20778],[0.52812,0.20778],[0.53875,0.20778],[0.54937,0.20778],[0.56,0.20778],[0.57063,0.20778],[0.58125,0.20778],[0.59188,0.20778],[0.6025,0.20778],[0.61313,0.20778],[0.62375,0.20778],[0.63438,0.20778],[0.645,0.20778],[0.65563,0.20778],[0.66625,0.20778],[0.67688,0.20778],[0.6875,0.20778],[0.69812,0.20778],[0.70875,0.20778],[0.71937,0.20778],[0.73,0.20778],[0.74062,0.20778],[0.75125,0.20778],[0.76187,0.20778],[0.7725,0.20778],[0.78312,0.20778],[0.79375,0.20778],[0.83625,0.20778],[0.84688,0.20778],[0.8575,0.20778],[0.0075,0.22667],[0.01812,0.22667],[0.02875,0.22667],[0.03938,0.22667],[0.05,0.22667],[0.06062,0.22667],[0.07125,0.22667],[0.08188,0.22667],[0.0925,0.22667],[0.10312,0.22667],[0.11375,0.22667],[0.12437,0.22667],[0.135,0.22667],[0.14563,0.22667],[0.15625,0.22667],[0.16687,0.22667],[0.1775,0.22667],[0.18812,0.22667],[0.19875,0.22667],[0.20938,0.22667],[0.22,0.22667],[0.23062,0.22667],[0.24125,0.22667],[0.25188,0.22667],[0.2625,0.22667],[0.27313,0.22667],[0.28375,0.22667],[0.29437,0.22667],[0.305,0.22667],[0.31562,0.22667],[0.32625,0.22667],[0.33687,0.22667],[0.3475,0.22667],[0.35813,0.22667],[0.36875,0.22667],[0.37938,0.22667],[0.39,0.22667],[0.40063,0.22667],[0.41125,0.22667],[0.42188,0.22667],[0.4325,0.22667],[0.44312,0.22667],[0.45375,0.22667],[0.46437,0.22667],[0.475,0.22667],[0.48562,0.22667],[0.49625,0.22667],[0.50687,0.22667],[0.5175,0.22667],[0.52812,0.22667],[0.53875,0.22667],[0.54937,0.22667],[0.56,0.22667],[0.57063,0.22667],[0.58125,0.22667],[0.59188,0.22667],[0.6025,0.22667],[0.61313,0.22667],[0.62375,0.22667],[0.63438,0.22667],[0.645,0.22667],[0.65563,0.22667],[0.66625,0.22667],[0.67688,0.22667],[0.6875,0.22667],[0.69812,0.22667],[0.70875,0.22667],[0.71937,0.22667],[0.73,0.22667],[0.74062,0.22667],[0.75125,0.22667],[0.76187,0.22667],[0.7725,0.22667],[0.78312,0.22667],[0.79375,0.22667],[0.82563,0.22667],[0.83625,0.22667],[0.0075,0.24556],[0.01812,0.24556],[0.02875,0.24556],[0.03938,0.24556],[0.05,0.24556],[0.06062,0.24556],[0.07125,0.24556],[0.08188,0.24556],[0.0925,0.24556],[0.10312,0.24556],[0.11375,0.24556],[0.12437,0.24556],[0.135,0.24556],[0.14563,0.24556],[0.15625,0.24556],[0.16687,0.24556],[0.1775,0.24556],[0.18812,0.24556],[0.19875,0.24556],[0.20938,0.24556],[0.22,0.24556],[0.23062,0.24556],[0.24125,0.24556],[0.25188,0.24556],[0.2625,0.24556],[0.27313,0.24556],[0.28375,0.24556],[0.29437,0.24556],[0.305,0.24556],[0.31562,0.24556],[0.32625,0.24556],[0.33687,0.24556],[0.3475,0.24556],[0.35813,0.24556],[0.36875,0.24556],[0.37938,0.24556],[0.39,0.24556],[0.40063,0.24556],[0.41125,0.24556],[0.42188,0.24556],[0.4325,0.24556],[0.44312,0.24556],[0.45375,0.24556],[0.46437,0.24556],[0.475,0.24556],[0.48562,0.24556],[0.49625,0.24556],[0.50687,0.24556],[0.5175,0.24556],[0.52812,0.24556],[0.53875,0.24556],[0.54937,0.24556],[0.56,0.24556],[0.57063,0.24556],[0.58125,0.24556],[0.59188,0.24556],[0.6025,0.24556],[0.61313,0.24556],[0.62375,0.24556],[0.63438,0.24556],[0.645,0.24556],[0.65563,0.24556],[0.66625,0.24556],[0.67688,0.24556],[0.6875,0.24556],[0.69812,0.24556],[0.70875,0.24556],[0.71937,0.24556],[0.73,0.24556],[0.74062,0.24556],[0.75125,0.24556],[0.76187,0.24556],[0.7725,0.24556],[0.78312,0.24556],[0.82563,0.24556],[0.0075,0.26444],[0.01812,0.26444],[0.02875,0.26444],[0.03938,0.26444],[0.05,0.26444],[0.06062,0.26444],[0.07125,0.26444],[0.08188,0.26444],[0.0925,0.26444],[0.10312,0.26444],[0.11375,0.26444],[0.12437,0.26444],[0.135,0.26444],[0.14563,0.26444],[0.15625,0.26444],[0.16687,0.26444],[0.1775,0.26444],[0.18812,0.26444],[0.19875,0.26444],[0.20938,0.26444],[0.22,0.26444],[0.23062,0.26444],[0.24125,0.26444],[0.25188,0.26444],[0.2625,0.26444],[0.27313,0.26444],[0.28375,0.26444],[0.29437,0.26444],[0.305,0.26444],[0.31562,0.26444],[0.32625,0.26444],[0.33687,0.26444],[0.3475,0.26444],[0.35813,0.26444],[0.36875,0.26444],[0.37938,0.26444],[0.39,0.26444],[0.40063,0.26444],[0.41125,0.26444],[0.42188,0.26444],[0.4325,0.26444],[0.44312,0.26444],[0.45375,0.26444],[0.46437,0.26444],[0.475,0.26444],[0.48562,0.26444],[0.49625,0.26444],[0.50687,0.26444],[0.5175,0.26444],[0.52812,0.26444],[0.53875,0.26444],[0.54937,0.26444],[0.56,0.26444],[0.57063,0.26444],[0.58125,0.26444],[0.59188,0.26444],[0.6025,0.26444],[0.61313,0.26444],[0.62375,0.26444],[0.63438,0.26444],[0.645,0.26444],[0.65563,0.26444],[0.66625,0.26444],[0.67688,0.26444],[0.6875,0.26444],[0.69812,0.26444],[0.70875,0.26444],[0.71937,0.26444],[0.73,0.26444],[0.74062,0.26444],[0.75125,0.26444],[0.76187,0.26444],[0.82563,0.26444],[0.83625,0.26444],[0.0075,0.28333],[0.01812,0.28333],[0.02875,0.28333],[0.03938,0.28333],[0.05,0.28333],[0.06062,0.28333],[0.07125,0.28333],[0.08188,0.28333],[0.0925,0.28333],[0.10312,0.28333],[0.11375,0.28333],[0.12437,0.28333],[0.135,0.28333],[0.14563,0.28333],[0.15625,0.28333],[0.16687,0.28333],[0.1775,0.28333],[0.18812,0.28333],[0.19875,0.28333],[0.20938,0.28333],[0.22,0.28333],[0.23062,0.28333],[0.24125,0.28333],[0.25188,0.28333],[0.2625,0.28333],[0.27313,0.28333],[0.28375,0.28333],[0.29437,0.28333],[0.305,0.28333],[0.31562,0.28333],[0.32625,0.28333],[0.33687,0.28333],[0.3475,0.28333],[0.35813,0.28333],[0.36875,0.28333],[0.37938,0.28333],[0.39,0.28333],[0.40063,0.28333],[0.41125,0.28333],[0.42188,0.28333],[0.4325,0.28333],[0.44312,0.28333],[0.45375,0.28333],[0.46437,0.28333],[0.475,0.28333],[0.48562,0.28333],[0.49625,0.28333],[0.50687,0.28333],[0.5175,0.28333],[0.52812,0.28333],[0.53875,0.28333],[0.54937,0.28333],[0.56,0.28333],[0.57063,0.28333],[0.58125,0.28333],[0.59188,0.28333],[0.6025,0.28333],[0.61313,0.28333],[0.62375,0.28333],[0.63438,0.28333],[0.645,0.28333],[0.65563,0.28333],[0.66625,0.28333],[0.67688,0.28333],[0.6875,0.28333],[0.69812,0.28333],[0.70875,0.28333],[0.71937,0.28333],[0.73,0.28333],[0.74062,0.28333],[0.75125,0.28333],[0.76187,0.28333],[0.0075,0.30222],[0.01812,0.30222],[0.02875,0.30222],[0.03938,0.30222],[0.05,0.30222],[0.06062,0.30222],[0.07125,0.30222],[0.08188,0.30222],[0.0925,0.30222],[0.10312,0.30222],[0.11375,0.30222],[0.12437,0.30222],[0.135,0.30222],[0.14563,0.30222],[0.15625,0.30222],[0.16687,0.30222],[0.1775,0.30222],[0.18812,0.30222],[0.19875,0.30222],[0.20938,0.30222],[0.22,0.30222],[0.23062,0.30222],[0.24125,0.30222],[0.25188,0.30222],[0.2625,0.30222],[0.27313,0.30222],[0.28375,0.30222],[0.29437,0.30222],[0.305,0.30222],[0.31562,0.30222],[0.32625,0.30222],[0.33687,0.30222],[0.3475,0.30222],[0.35813,0.30222],[0.36875,0.30222],[0.37938,0.30222],[0.39,0.30222],[0.40063,0.30222],[0.41125,0.30222],[0.42188,0.30222],[0.4325,0.30222],[0.44312,0.30222],[0.45375,0.30222],[0.46437,0.30222],[0.475,0.30222],[0.48562,0.30222],[0.49625,0.30222],[0.50687,0.30222],[0.5175,0.30222],[0.52812,0.30222],[0.53875,0.30222],[0.54937,0.30222],[0.56,0.30222],[0.57063,0.30222],[0.58125,0.30222],[0.59188,0.30222],[0.6025,0.30222],[0.61313,0.30222],[0.62375,0.30222],[0.63438,0.30222],[0.645,0.30222],[0.65563,0.30222],[0.66625,0.30222],[0.67688,0.30222],[0.6875,0.30222],[0.69812,0.30222],[0.70875,0.30222],[0.71937,0.30222],[0.73,0.30222],[0.74062,0.30222],[0.82563,0.30222],[0.0075,0.32111],[0.01812,0.32111],[0.02875,0.32111],[0.03938,0.32111],[0.05,0.32111],[0.06062,0.32111],[0.07125,0.32111],[0.08188,0.32111],[0.0925,0.32111],[0.10312,0.32111],[0.11375,0.32111],[0.12437,0.32111],[0.135,0.32111],[0.14563,0.32111],[0.15625,0.32111],[0.16687,0.32111],[0.1775,0.32111],[0.18812,0.32111],[0.19875,0.32111],[0.20938,0.32111],[0.22,0.32111],[0.23062,0.32111],[0.24125,0.32111],[0.25188,0.32111],[0.2625,0.32111],[0.27313,0.32111],[0.28375,0.32111],[0.29437,0.32111],[0.305,0.32111],[0.31562,0.32111],[0.32625,0.32111],[0.33687,0.32111],[0.3475,0.32111],[0.35813,0.32111],[0.36875,0.32111],[0.37938,0.32111],[0.39,0.32111],[0.40063,0.32111],[0.41125,0.32111],[0.42188,0.32111],[0.4325,0.32111],[0.44312,0.32111],[0.45375,0.32111],[0.46437,0.32111],[0.475,0.32111],[0.48562,0.32111],[0.49625,0.32111],[0.50687,0.32111],[0.5175,0.32111],[0.52812,0.32111],[0.53875,0.32111],[0.54937,0.32111],[0.56,0.32111],[0.57063,0.32111],[0.58125,0.32111],[0.59188,0.32111],[0.6025,0.32111],[0.61313,0.32111],[0.62375,0.32111],[0.63438,0.32111],[0.645,0.32111],[0.65563,0.32111],[0.66625,0.32111],[0.67688,0.32111],[0.6875,0.32111],[0.69812,0.32111],[0.70875,0.32111],[0.71937,0.32111],[0.73,0.32111],[0.82563,0.32111],[0.83625,0.32111],[0.0075,0.34],[0.01812,0.34],[0.02875,0.34],[0.03938,0.34],[0.05,0.34],[0.06062,0.34],[0.07125,0.34],[0.08188,0.34],[0.0925,0.34],[0.10312,0.34],[0.11375,0.34],[0.12437,0.34],[0.135,0.34],[0.14563,0.34],[0.15625,0.34],[0.16687,0.34],[0.1775,0.34],[0.18812,0.34],[0.19875,0.34],[0.20938,0.34],[0.22,0.34],[0.23062,0.34],[0.24125,0.34],[0.25188,0.34],[0.2625,0.34],[0.27313,0.34],[0.28375,0.34],[0.29437,0.34],[0.305,0.34],[0.31562,0.34],[0.32625,0.34],[0.33687,0.34],[0.3475,0.34],[0.35813,0.34],[0.36875,0.34],[0.37938,0.34],[0.39,0.34],[0.40063,0.34],[0.41125,0.34],[0.42188,0.34],[0.4325,0.34],[0.44312,0.34],[0.45375,0.34],[0.46437,0.34],[0.475,0.34],[0.48562,0.34],[0.49625,0.34],[0.50687,0.34],[0.5175,0.34],[0.52812,0.34],[0.53875,0.34],[0.54937,0.34],[0.56,0.34],[0.57063,0.34],[0.58125,0.34],[0.59188,0.34],[0.6025,0.34],[0.61313,0.34],[0.62375,0.34],[0.63438,0.34],[0.645,0.34],[0.65563,0.34],[0.66625,0.34],[0.67688,0.34],[0.6875,0.34],[0.69812,0.34],[0.70875,0.34],[0.82563,0.34],[0.83625,0.34],[0.84688,0.34],[0.8575,0.34],[0.86813,0.34],[0.87875,0.34],[0.0075,0.35889],[0.01812,0.35889],[0.02875,0.35889],[0.03938,0.35889],[0.05,0.35889],[0.06062,0.35889],[0.07125,0.35889],[0.08188,0.35889],[0.0925,0.35889],[0.10312,0.35889],[0.11375,0.35889],[0.12437,0.35889],[0.135,0.35889],[0.14563,0.35889],[0.15625,0.35889],[0.16687,0.35889],[0.1775,0.35889],[0.18812,0.35889],[0.19875,0.35889],[0.20938,0.35889],[0.22,0.35889],[0.23062,0.35889],[0.24125,0.35889],[0.25188,0.35889],[0.2625,0.35889],[0.27313,0.35889],[0.28375,0.35889],[0.29437,0.35889],[0.305,0.35889],[0.31562,0.35889],[0.32625,0.35889],[0.33687,0.35889],[0.3475,0.35889],[0.35813,0.35889],[0.36875,0.35889],[0.37938,0.35889],[0.39,0.35889],[0.40063,0.35889],[0.41125,0.35889],[0.42188,0.35889],[0.4325,0.35889],[0.44312,0.35889],[0.45375,0.35889],[0.46437,0.35889],[0.475,0.35889],[0.48562,0.35889],[0.49625,0.35889],[0.50687,0.35889],[0.5175,0.35889],[0.52812,0.35889],[0.53875,0.35889],[0.54937,0.35889],[0.56,0.35889],[0.57063,0.35889],[0.58125,0.35889],[0.59188,0.35889],[0.6025,0.35889],[0.61313,0.35889],[0.62375,0.35889],[0.63438,0.35889],[0.645,0.35889],[0.65563,0.35889],[0.6875,0.35889],[0.79375,0.35889],[0.80437,0.35889],[0.815,0.35889],[0.82563,0.35889],[0.83625,0.35889],[0.84688,0.35889],[0.0075,0.37778],[0.01812,0.37778],[0.02875,0.37778],[0.03938,0.37778],[0.05,0.37778],[0.06062,0.37778],[0.07125,0.37778],[0.08188,0.37778],[0.0925,0.37778],[0.10312,0.37778],[0.11375,0.37778],[0.12437,0.37778],[0.135,0.37778],[0.14563,0.37778],[0.15625,0.37778],[0.16687,0.37778],[0.1775,0.37778],[0.18812,0.37778],[0.19875,0.37778],[0.20938,0.37778],[0.22,0.37778],[0.23062,0.37778],[0.24125,0.37778],[0.25188,0.37778],[0.2625,0.37778],[0.27313,0.37778],[0.28375,0.37778],[0.29437,0.37778],[0.305,0.37778],[0.31562,0.37778],[0.32625,0.37778],[0.33687,0.37778],[0.3475,0.37778],[0.35813,0.37778],[0.36875,0.37778],[0.37938,0.37778],[0.39,0.37778],[0.40063,0.37778],[0.41125,0.37778],[0.42188,0.37778],[0.4325,0.37778],[0.44312,0.37778],[0.45375,0.37778],[0.46437,0.37778],[0.475,0.37778],[0.48562,0.37778],[0.49625,0.37778],[0.50687,0.37778],[0.5175,0.37778],[0.52812,0.37778],[0.53875,0.37778],[0.54937,0.37778],[0.56,0.37778],[0.57063,0.37778],[0.58125,0.37778],[0.59188,0.37778],[0.6025,0.37778],[0.61313,0.37778],[0.62375,0.37778],[0.63438,0.37778],[0.79375,0.37778],[0.80437,0.37778],[0.0075,0.39667],[0.01812,0.39667],[0.02875,0.39667],[0.03938,0.39667],[0.05,0.39667],[0.06062,0.39667],[0.07125,0.39667],[0.08188,0.39667],[0.0925,0.39667],[0.10312,0.39667],[0.11375,0.39667],[0.12437,0.39667],[0.135,0.39667],[0.14563,0.39667],[0.15625,0.39667],[0.16687,0.39667],[0.1775,0.39667],[0.18812,0.39667],[0.19875,0.39667],[0.20938,0.39667],[0.22,0.39667],[0.23062,0.39667],[0.24125,0.39667],[0.25188,0.39667],[0.2625,0.39667],[0.27313,0.39667],[0.28375,0.39667],[0.29437,0.39667],[0.305,0.39667],[0.31562,0.39667],[0.32625,0.39667],[0.33687,0.39667],[0.3475,0.39667],[0.35813,0.39667],[0.36875,0.39667],[0.37938,0.39667],[0.39,0.39667],[0.40063,0.39667],[0.41125,0.39667],[0.42188,0.39667],[0.4325,0.39667],[0.44312,0.39667],[0.45375,0.39667],[0.46437,0.39667],[0.475,0.39667],[0.48562,0.39667],[0.49625,0.39667],[0.50687,0.39667],[0.5175,0.39667],[0.52812,0.39667],[0.53875,0.39667],[0.54937,0.39667],[0.56,0.39667],[0.57063,0.39667],[0.58125,0.39667],[0.59188,0.39667],[0.6025,0.39667],[0.61313,0.39667],[0.62375,0.39667],[0.80437,0.39667],[0.815,0.39667],[0.0075,0.41556],[0.01812,0.41556],[0.02875,0.41556],[0.03938,0.41556],[0.05,0.41556],[0.06062,0.41556],[0.07125,0.41556],[0.08188,0.41556],[0.0925,0.41556],[0.10312,0.41556],[0.11375,0.41556],[0.12437,0.41556],[0.135,0.41556],[0.14563,0.41556],[0.15625,0.41556],[0.16687,0.41556],[0.1775,0.41556],[0.18812,0.41556],[0.19875,0.41556],[0.20938,0.41556],[0.22,0.41556],[0.23062,0.41556],[0.24125,0.41556],[0.25188,0.41556],[0.2625,0.41556],[0.27313,0.41556],[0.28375,0.41556],[0.29437,0.41556],[0.305,0.41556],[0.31562,0.41556],[0.32625,0.41556],[0.33687,0.41556],[0.3475,0.41556],[0.35813,0.41556],[0.36875,0.41556],[0.37938,0.41556],[0.39,0.41556],[0.40063,0.41556],[0.41125,0.41556],[0.42188,0.41556],[0.4325,0.41556],[0.44312,0.41556],[0.45375,0.41556],[0.46437,0.41556],[0.475,0.41556],[0.5175,0.41556],[0.52812,0.41556],[0.53875,0.41556],[0.54937,0.41556],[0.56,0.41556],[0.57063,0.41556],[0.58125,0.41556],[0.59188,0.41556],[0.6025,0.41556],[0.61313,0.41556],[0.79375,0.41556],[0.80437,0.41556],[0.815,0.41556],[0.0075,0.43444],[0.01812,0.43444],[0.02875,0.43444],[0.03938,0.43444],[0.05,0.43444],[0.06062,0.43444],[0.07125,0.43444],[0.08188,0.43444],[0.0925,0.43444],[0.10312,0.43444],[0.11375,0.43444],[0.12437,0.43444],[0.135,0.43444],[0.14563,0.43444],[0.15625,0.43444],[0.16687,0.43444],[0.1775,0.43444],[0.18812,0.43444],[0.19875,0.43444],[0.20938,0.43444],[0.22,0.43444],[0.23062,0.43444],[0.24125,0.43444],[0.25188,0.43444],[0.2625,0.43444],[0.27313,0.43444],[0.28375,0.43444],[0.29437,0.43444],[0.305,0.43444],[0.31562,0.43444],[0.32625,0.43444],[0.33687,0.43444],[0.3475,0.43444],[0.35813,0.43444],[0.36875,0.43444],[0.37938,0.43444],[0.39,0.43444],[0.40063,0.43444],[0.41125,0.43444],[0.42188,0.43444],[0.4325,0.43444],[0.44312,0.43444],[0.45375,0.43444],[0.50687,0.43444],[0.57063,0.43444],[0.58125,0.43444],[0.59188,0.43444],[0.80437,0.43444],[0.815,0.43444],[0.0075,0.45333],[0.01812,0.45333],[0.02875,0.45333],[0.03938,0.45333],[0.05,0.45333],[0.06062,0.45333],[0.07125,0.45333],[0.08188,0.45333],[0.0925,0.45333],[0.10312,0.45333],[0.11375,0.45333],[0.12437,0.45333],[0.135,0.45333],[0.14563,0.45333],[0.15625,0.45333],[0.16687,0.45333],[0.1775,0.45333],[0.18812,0.45333],[0.19875,0.45333],[0.20938,0.45333],[0.22,0.45333],[0.23062,0.45333],[0.24125,0.45333],[0.25188,0.45333],[0.2625,0.45333],[0.27313,0.45333],[0.28375,0.45333],[0.29437,0.45333],[0.305,0.45333],[0.31562,0.45333],[0.32625,0.45333],[0.33687,0.45333],[0.3475,0.45333],[0.35813,0.45333],[0.36875,0.45333],[0.37938,0.45333],[0.39,0.45333],[0.40063,0.45333],[0.41125,0.45333],[0.42188,0.45333],[0.4325,0.45333],[0.56,0.45333],[0.57063,0.45333],[0.58125,0.45333],[0.59188,0.45333],[0.6025,0.45333],[0.79375,0.45333],[0.80437,0.45333],[0.815,0.45333],[0.0075,0.47222],[0.01812,0.47222],[0.02875,0.47222],[0.03938,0.47222],[0.05,0.47222],[0.06062,0.47222],[0.07125,0.47222],[0.08188,0.47222],[0.0925,0.47222],[0.10312,0.47222],[0.11375,0.47222],[0.12437,0.47222],[0.135,0.47222],[0.14563,0.47222],[0.15625,0.47222],[0.16687,0.47222],[0.1775,0.47222],[0.18812,0.47222],[0.19875,0.47222],[0.20938,0.47222],[0.22,0.47222],[0.23062,0.47222],[0.24125,0.47222],[0.25188,0.47222],[0.2625,0.47222],[0.27313,0.47222],[0.28375,0.47222],[0.29437,0.47222],[0.305,0.47222],[0.31562,0.47222],[0.32625,0.47222],[0.33687,0.47222],[0.3475,0.47222],[0.35813,0.47222],[0.36875,0.47222],[0.37938,0.47222],[0.39,0.47222],[0.40063,0.47222],[0.41125,0.47222],[0.42188,0.47222],[0.4325,0.47222],[0.44312,0.47222],[0.45375,0.47222],[0.56,0.47222],[0.58125,0.47222],[0.59188,0.47222],[0.6025,0.47222],[0.61313,0.47222],[0.78312,0.47222],[0.79375,0.47222],[0.80437,0.47222],[0.0075,0.49111],[0.01812,0.49111],[0.02875,0.49111],[0.03938,0.49111],[0.05,0.49111],[0.06062,0.49111],[0.07125,0.49111],[0.08188,0.49111],[0.0925,0.49111],[0.10312,0.49111],[0.11375,0.49111],[0.12437,0.49111],[0.135,0.49111],[0.14563,0.49111],[0.15625,0.49111],[0.16687,0.49111],[0.1775,0.49111],[0.18812,0.49111],[0.19875,0.49111],[0.20938,0.49111],[0.22,0.49111],[0.23062,0.49111],[0.24125,0.49111],[0.25188,0.49111],[0.2625,0.49111],[0.27313,0.49111],[0.28375,0.49111],[0.29437,0.49111],[0.305,0.49111],[0.31562,0.49111],[0.32625,0.49111],[0.33687,0.49111],[0.3475,0.49111],[0.35813,0.49111],[0.36875,0.49111],[0.37938,0.49111],[0.39,0.49111],[0.40063,0.49111],[0.41125,0.49111],[0.42188,0.49111],[0.4325,0.49111],[0.44312,0.49111],[0.45375,0.49111],[0.46437,0.49111],[0.475,0.49111],[0.48562,0.49111],[0.49625,0.49111],[0.50687,0.49111],[0.59188,0.49111],[0.6025,0.49111],[0.61313,0.49111],[0.62375,0.49111],[0.74062,0.49111],[0.76187,0.49111],[0.7725,0.49111],[0.78312,0.49111],[0.79375,0.49111],[0.80437,0.49111],[0.0075,0.51],[0.01812,0.51],[0.02875,0.51],[0.03938,0.51],[0.05,0.51],[0.06062,0.51],[0.07125,0.51],[0.08188,0.51],[0.0925,0.51],[0.10312,0.51],[0.11375,0.51],[0.12437,0.51],[0.135,0.51],[0.14563,0.51],[0.15625,0.51],[0.16687,0.51],[0.1775,0.51],[0.18812,0.51],[0.19875,0.51],[0.20938,0.51],[0.22,0.51],[0.23062,0.51],[0.24125,0.51],[0.25188,0.51],[0.2625,0.51],[0.27313,0.51],[0.28375,0.51],[0.29437,0.51],[0.305,0.51],[0.31562,0.51],[0.32625,0.51],[0.33687,0.51],[0.3475,0.51],[0.35813,0.51],[0.36875,0.51],[0.37938,0.51],[0.39,0.51],[0.40063,0.51],[0.41125,0.51],[0.42188,0.51],[0.4325,0.51],[0.44312,0.51],[0.45375,0.51],[0.46437,0.51],[0.475,0.51],[0.58125,0.51],[0.59188,0.51],[0.6025,0.51],[0.61313,0.51],[0.62375,0.51],[0.73,0.51],[0.74062,0.51],[0.75125,0.51],[0.76187,0.51],[0.7725,0.51],[0.78312,0.51],[0.79375,0.51],[0.80437,0.51],[0.0075,0.52889],[0.01812,0.52889],[0.02875,0.52889],[0.03938,0.52889],[0.05,0.52889],[0.06062,0.52889],[0.07125,0.52889],[0.08188,0.52889],[0.0925,0.52889],[0.10312,0.52889],[0.11375,0.52889],[0.12437,0.52889],[0.135,0.52889],[0.14563,0.52889],[0.15625,0.52889],[0.16687,0.52889],[0.1775,0.52889],[0.18812,0.52889],[0.19875,0.52889],[0.20938,0.52889],[0.22,0.52889],[0.23062,0.52889],[0.24125,0.52889],[0.25188,0.52889],[0.2625,0.52889],[0.27313,0.52889],[0.28375,0.52889],[0.29437,0.52889],[0.305,0.52889],[0.31562,0.52889],[0.32625,0.52889],[0.33687,0.52889],[0.3475,0.52889],[0.35813,0.52889],[0.36875,0.52889],[0.37938,0.52889],[0.39,0.52889],[0.40063,0.52889],[0.41125,0.52889],[0.42188,0.52889],[0.4325,0.52889],[0.44312,0.52889],[0.45375,0.52889],[0.46437,0.52889],[0.58125,0.52889],[0.59188,0.52889],[0.6025,0.52889],[0.61313,0.52889],[0.67688,0.52889],[0.6875,0.52889],[0.69812,0.52889],[0.70875,0.52889],[0.71937,0.52889],[0.73,0.52889],[0.74062,0.52889],[0.75125,0.52889],[0.76187,0.52889],[0.7725,0.52889],[0.78312,0.52889],[0.79375,0.52889],[0.0075,0.54778],[0.01812,0.54778],[0.02875,0.54778],[0.03938,0.54778],[0.05,0.54778],[0.06062,0.54778],[0.07125,0.54778],[0.08188,0.54778],[0.0925,0.54778],[0.10312,0.54778],[0.11375,0.54778],[0.12437,0.54778],[0.135,0.54778],[0.14563,0.54778],[0.15625,0.54778],[0.16687,0.54778],[0.1775,0.54778],[0.18812,0.54778],[0.19875,0.54778],[0.20938,0.54778],[0.22,0.54778],[0.23062,0.54778],[0.24125,0.54778],[0.25188,0.54778],[0.2625,0.54778],[0.27313,0.54778],[0.28375,0.54778],[0.29437,0.54778],[0.305,0.54778],[0.31562,0.54778],[0.32625,0.54778],[0.33687,0.54778],[0.3475,0.54778],[0.35813,0.54778],[0.36875,0.54778],[0.37938,0.54778],[0.39,0.54778],[0.40063,0.54778],[0.41125,0.54778],[0.42188,0.54778],[0.4325,0.54778],[0.44312,0.54778],[0.45375,0.54778],[0.46437,0.54778],[0.475,0.54778],[0.65563,0.54778],[0.66625,0.54778],[0.67688,0.54778],[0.71937,0.54778],[0.73,0.54778],[0.74062,0.54778],[0.0075,0.56667],[0.01812,0.56667],[0.02875,0.56667],[0.03938,0.56667],[0.05,0.56667],[0.06062,0.56667],[0.07125,0.56667],[0.08188,0.56667],[0.0925,0.56667],[0.10312,0.56667],[0.11375,0.56667],[0.12437,0.56667],[0.135,0.56667],[0.14563,0.56667],[0.15625,0.56667],[0.16687,0.56667],[0.1775,0.56667],[0.18812,0.56667],[0.19875,0.56667],[0.20938,0.56667],[0.22,0.56667],[0.23062,0.56667],[0.24125,0.56667],[0.25188,0.56667],[0.2625,0.56667],[0.27313,0.56667],[0.28375,0.56667],[0.29437,0.56667],[0.305,0.56667],[0.31562,0.56667],[0.32625,0.56667],[0.33687,0.56667],[0.3475,0.56667],[0.35813,0.56667],[0.36875,0.56667],[0.37938,0.56667],[0.39,0.56667],[0.40063,0.56667],[0.41125,0.56667],[0.42188,0.56667],[0.4325,0.56667],[0.44312,0.56667],[0.45375,0.56667],[0.46437,0.56667],[0.475,0.56667],[0.645,0.56667],[0.65563,0.56667],[0.67688,0.56667],[0.6875,0.56667],[0.69812,0.56667],[0.0075,0.58556],[0.01812,0.58556],[0.02875,0.58556],[0.03938,0.58556],[0.05,0.58556],[0.06062,0.58556],[0.07125,0.58556],[0.08188,0.58556],[0.0925,0.58556],[0.10312,0.58556],[0.11375,0.58556],[0.12437,0.58556],[0.135,0.58556],[0.14563,0.58556],[0.15625,0.58556],[0.16687,0.58556],[0.1775,0.58556],[0.18812,0.58556],[0.19875,0.58556],[0.20938,0.58556],[0.22,0.58556],[0.23062,0.58556],[0.24125,0.58556],[0.25188,0.58556],[0.2625,0.58556],[0.27313,0.58556],[0.28375,0.58556],[0.29437,0.58556],[0.305,0.58556],[0.31562,0.58556],[0.32625,0.58556],[0.33687,0.58556],[0.3475,0.58556],[0.35813,0.58556],[0.36875,0.58556],[0.37938,0.58556],[0.39,0.58556],[0.40063,0.58556],[0.41125,0.58556],[0.42188,0.58556],[0.4325,0.58556],[0.44312,0.58556],[0.45375,0.58556],[0.46437,0.58556],[0.475,0.58556],[0.48562,0.58556],[0.63438,0.58556],[0.645,0.58556],[0.65563,0.58556],[0.0075,0.60444],[0.01812,0.60444],[0.02875,0.60444],[0.03938,0.60444],[0.05,0.60444],[0.06062,0.60444],[0.07125,0.60444],[0.08188,0.60444],[0.0925,0.60444],[0.10312,0.60444],[0.11375,0.60444],[0.12437,0.60444],[0.135,0.60444],[0.14563,0.60444],[0.15625,0.60444],[0.16687,0.60444],[0.1775,0.60444],[0.18812,0.60444],[0.19875,0.60444],[0.20938,0.60444],[0.22,0.60444],[0.23062,0.60444],[0.24125,0.60444],[0.25188,0.60444],[0.2625,0.60444],[0.27313,0.60444],[0.28375,0.60444],[0.29437,0.60444],[0.305,0.60444],[0.31562,0.60444],[0.32625,0.60444],[0.33687,0.60444],[0.3475,0.60444],[0.35813,0.60444],[0.36875,0.60444],[0.37938,0.60444],[0.39,0.60444],[0.40063,0.60444],[0.41125,0.60444],[0.42188,0.60444],[0.4325,0.60444],[0.44312,0.60444],[0.45375,0.60444],[0.46437,0.60444],[0.475,0.60444],[0.48562,0.60444],[0.49625,0.60444],[0.645,0.60444],[0.65563,0.60444],[0.0075,0.62333],[0.01812,0.62333],[0.02875,0.62333],[0.03938,0.62333],[0.05,0.62333],[0.06062,0.62333],[0.07125,0.62333],[0.08188,0.62333],[0.0925,0.62333],[0.10312,0.62333],[0.11375,0.62333],[0.12437,0.62333],[0.135,0.62333],[0.14563,0.62333],[0.15625,0.62333],[0.16687,0.62333],[0.1775,0.62333],[0.18812,0.62333],[0.19875,0.62333],[0.20938,0.62333],[0.22,0.62333],[0.23062,0.62333],[0.24125,0.62333],[0.25188,0.62333],[0.2625,0.62333],[0.27313,0.62333],[0.28375,0.62333],[0.29437,0.62333],[0.305,0.62333],[0.31562,0.62333],[0.32625,0.62333],[0.33687,0.62333],[0.3475,0.62333],[0.35813,0.62333],[0.36875,0.62333],[0.37938,0.62333],[0.39,0.62333],[0.40063,0.62333],[0.41125,0.62333],[0.42188,0.62333],[0.4325,0.62333],[0.44312,0.62333],[0.45375,0.62333],[0.46437,0.62333],[0.475,0.62333],[0.48562,0.62333],[0.49625,0.62333],[0.0075,0.64222],[0.01812,0.64222],[0.02875,0.64222],[0.03938,0.64222],[0.05,0.64222],[0.06062,0.64222],[0.07125,0.64222],[0.08188,0.64222],[0.0925,0.64222],[0.10312,0.64222],[0.11375,0.64222],[0.12437,0.64222],[0.135,0.64222],[0.14563,0.64222],[0.15625,0.64222],[0.16687,0.64222],[0.1775,0.64222],[0.18812,0.64222],[0.19875,0.64222],[0.20938,0.64222],[0.22,0.64222],[0.23062,0.64222],[0.24125,0.64222],[0.25188,0.64222],[0.2625,0.64222],[0.27313,0.64222],[0.28375,0.64222],[0.29437,0.64222],[0.305,0.64222],[0.31562,0.64222],[0.32625,0.64222],[0.33687,0.64222],[0.3475,0.64222],[0.35813,0.64222],[0.36875,0.64222],[0.37938,0.64222],[0.39,0.64222],[0.40063,0.64222],[0.41125,0.64222],[0.42188,0.64222],[0.4325,0.64222],[0.44312,0.64222],[0.45375,0.64222],[0.46437,0.64222],[0.475,0.64222],[0.48562,0.64222],[0.49625,0.64222],[0.0075,0.66111],[0.01812,0.66111],[0.02875,0.66111],[0.03938,0.66111],[0.05,0.66111],[0.06062,0.66111],[0.07125,0.66111],[0.08188,0.66111],[0.0925,0.66111],[0.10312,0.66111],[0.11375,0.66111],[0.12437,0.66111],[0.135,0.66111],[0.14563,0.66111],[0.15625,0.66111],[0.16687,0.66111],[0.1775,0.66111],[0.18812,0.66111],[0.19875,0.66111],[0.20938,0.66111],[0.22,0.66111],[0.23062,0.66111],[0.24125,0.66111],[0.25188,0.66111],[0.2625,0.66111],[0.27313,0.66111],[0.28375,0.66111],[0.29437,0.66111],[0.305,0.66111],[0.31562,0.66111],[0.32625,0.66111],[0.33687,0.66111],[0.3475,0.66111],[0.35813,0.66111],[0.36875,0.66111],[0.37938,0.66111],[0.39,0.66111],[0.40063,0.66111],[0.41125,0.66111],[0.42188,0.66111],[0.4325,0.66111],[0.44312,0.66111],[0.45375,0.66111],[0.46437,0.66111],[0.475,0.66111],[0.48562,0.66111],[0.49625,0.66111],[0.50687,0.66111],[0.0075,0.68],[0.01812,0.68],[0.02875,0.68],[0.03938,0.68],[0.05,0.68],[0.06062,0.68],[0.07125,0.68],[0.08188,0.68],[0.0925,0.68],[0.10312,0.68],[0.11375,0.68],[0.12437,0.68],[0.135,0.68],[0.14563,0.68],[0.15625,0.68],[0.16687,0.68],[0.1775,0.68],[0.18812,0.68],[0.19875,0.68],[0.20938,0.68],[0.22,0.68],[0.23062,0.68],[0.24125,0.68],[0.25188,0.68],[0.2625,0.68],[0.27313,0.68],[0.28375,0.68],[0.29437,0.68],[0.305,0.68],[0.31562,0.68],[0.32625,0.68],[0.33687,0.68],[0.3475,0.68],[0.35813,0.68],[0.36875,0.68],[0.37938,0.68],[0.39,0.68],[0.40063,0.68],[0.41125,0.68],[0.42188,0.68],[0.4325,0.68],[0.44312,0.68],[0.45375,0.68],[0.46437,0.68],[0.475,0.68],[0.48562,0.68],[0.49625,0.68],[0.0075,0.69889],[0.01812,0.69889],[0.02875,0.69889],[0.03938,0.69889],[0.05,0.69889],[0.06062,0.69889],[0.07125,0.69889],[0.08188,0.69889],[0.0925,0.69889],[0.10312,0.69889],[0.11375,0.69889],[0.12437,0.69889],[0.135,0.69889],[0.14563,0.69889],[0.15625,0.69889],[0.16687,0.69889],[0.1775,0.69889],[0.18812,0.69889],[0.19875,0.69889],[0.20938,0.69889],[0.22,0.69889],[0.23062,0.69889],[0.24125,0.69889],[0.25188,0.69889],[0.2625,0.69889],[0.27313,0.69889],[0.28375,0.69889],[0.29437,0.69889],[0.305,0.69889],[0.31562,0.69889],[0.32625,0.69889],[0.33687,0.69889],[0.3475,0.69889],[0.35813,0.69889],[0.36875,0.69889],[0.37938,0.69889],[0.39,0.69889],[0.40063,0.69889],[0.41125,0.69889],[0.42188,0.69889],[0.4325,0.69889],[0.44312,0.69889],[0.45375,0.69889],[0.46437,0.69889],[0.475,0.69889],[0.48562,0.69889],[0.0075,0.71778],[0.01812,0.71778],[0.02875,0.71778],[0.03938,0.71778],[0.05,0.71778],[0.06062,0.71778],[0.07125,0.71778],[0.08188,0.71778],[0.0925,0.71778],[0.10312,0.71778],[0.11375,0.71778],[0.12437,0.71778],[0.135,0.71778],[0.14563,0.71778],[0.15625,0.71778],[0.16687,0.71778],[0.1775,0.71778],[0.18812,0.71778],[0.19875,0.71778],[0.20938,0.71778],[0.22,0.71778],[0.23062,0.71778],[0.24125,0.71778],[0.25188,0.71778],[0.2625,0.71778],[0.27313,0.71778],[0.28375,0.71778],[0.29437,0.71778],[0.305,0.71778],[0.31562,0.71778],[0.32625,0.71778],[0.33687,0.71778],[0.3475,0.71778],[0.35813,0.71778],[0.36875,0.71778],[0.37938,0.71778],[0.39,0.71778],[0.40063,0.71778],[0.41125,0.71778],[0.42188,0.71778],[0.4325,0.71778],[0.44312,0.71778],[0.45375,0.71778],[0.46437,0.71778],[0.475,0.71778],[0.0075,0.73667],[0.01812,0.73667],[0.02875,0.73667],[0.03938,0.73667],[0.05,0.73667],[0.06062,0.73667],[0.07125,0.73667],[0.08188,0.73667],[0.0925,0.73667],[0.10312,0.73667],[0.11375,0.73667],[0.12437,0.73667],[0.135,0.73667],[0.14563,0.73667],[0.15625,0.73667],[0.16687,0.73667],[0.1775,0.73667],[0.18812,0.73667],[0.19875,0.73667],[0.20938,0.73667],[0.22,0.73667],[0.23062,0.73667],[0.24125,0.73667],[0.25188,0.73667],[0.2625,0.73667],[0.27313,0.73667],[0.28375,0.73667],[0.29437,0.73667],[0.305,0.73667],[0.31562,0.73667],[0.32625,0.73667],[0.33687,0.73667],[0.3475,0.73667],[0.35813,0.73667],[0.36875,0.73667],[0.37938,0.73667],[0.39,0.73667],[0.40063,0.73667],[0.41125,0.73667],[0.42188,0.73667],[0.4325,0.73667],[0.44312,0.73667],[0.45375,0.73667],[0.46437,0.73667],[0.0075,0.75556],[0.01812,0.75556],[0.02875,0.75556],[0.03938,0.75556],[0.05,0.75556],[0.06062,0.75556],[0.07125,0.75556],[0.08188,0.75556],[0.0925,0.75556],[0.10312,0.75556],[0.11375,0.75556],[0.12437,0.75556],[0.135,0.75556],[0.14563,0.75556],[0.15625,0.75556],[0.16687,0.75556],[0.1775,0.75556],[0.18812,0.75556],[0.19875,0.75556],[0.20938,0.75556],[0.22,0.75556],[0.23062,0.75556],[0.24125,0.75556],[0.25188,0.75556],[0.2625,0.75556],[0.27313,0.75556],[0.28375,0.75556],[0.29437,0.75556],[0.305,0.75556],[0.31562,0.75556],[0.32625,0.75556],[0.33687,0.75556],[0.3475,0.75556],[0.35813,0.75556],[0.36875,0.75556],[0.37938,0.75556],[0.39,0.75556],[0.40063,0.75556],[0.41125,0.75556],[0.42188,0.75556],[0.4325,0.75556],[0.44312,0.75556],[0.45375,0.75556],[0.49625,0.75556],[0.50687,0.75556],[0.0075,0.77444],[0.01812,0.77444],[0.02875,0.77444],[0.03938,0.77444],[0.05,0.77444],[0.06062,0.77444],[0.07125,0.77444],[0.08188,0.77444],[0.0925,0.77444],[0.10312,0.77444],[0.11375,0.77444],[0.12437,0.77444],[0.135,0.77444],[0.14563,0.77444],[0.15625,0.77444],[0.16687,0.77444],[0.1775,0.77444],[0.18812,0.77444],[0.19875,0.77444],[0.20938,0.77444],[0.22,0.77444],[0.23062,0.77444],[0.24125,0.77444],[0.25188,0.77444],[0.2625,0.77444],[0.27313,0.77444],[0.28375,0.77444],[0.29437,0.77444],[0.305,0.77444],[0.31562,0.77444],[0.32625,0.77444],[0.33687,0.77444],[0.3475,0.77444],[0.35813,0.77444],[0.36875,0.77444],[0.37938,0.77444],[0.39,0.77444],[0.40063,0.77444],[0.41125,0.77444],[0.42188,0.77444],[0.4325,0.77444],[0.44312,0.77444],[0.48562,0.77444],[0.49625,0.77444],[0.0075,0.79333],[0.01812,0.79333],[0.02875,0.79333],[0.03938,0.79333],[0.05,0.79333],[0.06062,0.79333],[0.07125,0.79333],[0.08188,0.79333],[0.0925,0.79333],[0.10312,0.79333],[0.11375,0.79333],[0.12437,0.79333],[0.135,0.79333],[0.14563,0.79333],[0.15625,0.79333],[0.16687,0.79333],[0.1775,0.79333],[0.18812,0.79333],[0.19875,0.79333],[0.20938,0.79333],[0.22,0.79333],[0.23062,0.79333],[0.24125,0.79333],[0.25188,0.79333],[0.2625,0.79333],[0.27313,0.79333],[0.28375,0.79333],[0.29437,0.79333],[0.305,0.79333],[0.31562,0.79333],[0.32625,0.79333],[0.33687,0.79333],[0.3475,0.79333],[0.35813,0.79333],[0.36875,0.79333],[0.37938,0.79333],[0.39,0.79333],[0.40063,0.79333],[0.41125,0.79333],[0.42188,0.79333],[0.48562,0.79333],[0.49625,0.79333],[0.0075,0.81222],[0.02875,0.81222],[0.03938,0.81222],[0.05,0.81222],[0.06062,0.81222],[0.07125,0.81222],[0.08188,0.81222],[0.0925,0.81222],[0.10312,0.81222],[0.11375,0.81222],[0.12437,0.81222],[0.135,0.81222],[0.14563,0.81222],[0.15625,0.81222],[0.16687,0.81222],[0.1775,0.81222],[0.18812,0.81222],[0.19875,0.81222],[0.20938,0.81222],[0.22,0.81222],[0.23062,0.81222],[0.24125,0.81222],[0.25188,0.81222],[0.2625,0.81222],[0.27313,0.81222],[0.28375,0.81222],[0.29437,0.81222],[0.305,0.81222],[0.31562,0.81222],[0.32625,0.81222],[0.33687,0.81222],[0.3475,0.81222],[0.35813,0.81222],[0.36875,0.81222],[0.48562,0.81222],[0.03938,0.83111],[0.05,0.83111],[0.06062,0.83111],[0.07125,0.83111],[0.08188,0.83111],[0.0925,0.83111],[0.10312,0.83111],[0.11375,0.83111],[0.12437,0.83111],[0.135,0.83111],[0.14563,0.83111],[0.15625,0.83111],[0.16687,0.83111],[0.1775,0.83111],[0.18812,0.83111],[0.19875,0.83111],[0.20938,0.83111],[0.22,0.83111],[0.23062,0.83111],[0.24125,0.83111],[0.25188,0.83111],[0.2625,0.83111],[0.27313,0.83111],[0.28375,0.83111],[0.305,0.83111],[0.31562,0.83111],[0.32625,0.83111],[0.33687,0.83111],[0.3475,0.83111],[0.03938,0.85],[0.05,0.85],[0.06062,0.85],[0.07125,0.85],[0.08188,0.85],[0.0925,0.85],[0.10312,0.85],[0.11375,0.85],[0.12437,0.85],[0.135,0.85],[0.14563,0.85],[0.15625,0.85],[0.16687,0.85],[0.1775,0.85],[0.18812,0.85],[0.19875,0.85],[0.20938,0.85],[0.22,0.85],[0.23062,0.85],[0.24125,0.85],[0.25188,0.85],[0.2625,0.85],[0.31562,0.85],[0.32625,0.85],[0.05,0.86889],[0.06062,0.86889],[0.07125,0.86889],[0.08188,0.86889],[0.0925,0.86889],[0.10312,0.86889],[0.11375,0.86889],[0.12437,0.86889],[0.135,0.86889],[0.14563,0.86889],[0.15625,0.86889],[0.16687,0.86889],[0.1775,0.86889],[0.18812,0.86889],[0.19875,0.86889],[0.20938,0.86889],[0.22,0.86889],[0.23062,0.86889],[0.24125,0.86889],[0.25188,0.86889],[0.31562,0.86889],[0.32625,0.86889],[0.06062,0.88778],[0.07125,0.88778],[0.08188,0.88778],[0.0925,0.88778],[0.10312,0.88778],[0.11375,0.88778],[0.12437,0.88778],[0.135,0.88778],[0.14563,0.88778],[0.15625,0.88778],[0.16687,0.88778],[0.1775,0.88778],[0.18812,0.88778],[0.19875,0.88778],[0.20938,0.88778],[0.22,0.88778],[0.23062,0.88778],[0.24125,0.88778],[0.305,0.88778],[0.31562,0.88778],[0.07125,0.90667],[0.08188,0.90667],[0.0925,0.90667],[0.10312,0.90667],[0.11375,0.90667],[0.12437,0.90667],[0.135,0.90667],[0.14563,0.90667],[0.15625,0.90667],[0.16687,0.90667],[0.1775,0.90667],[0.18812,0.90667],[0.19875,0.90667],[0.20938,0.90667],[0.22,0.90667],[0.23062,0.90667],[0.24125,0.90667],[0.25188,0.90667],[0.49625,0.90667],[0.50687,0.90667],[0.08188,0.92556],[0.0925,0.92556],[0.10312,0.92556],[0.11375,0.92556],[0.12437,0.92556],[0.135,0.92556],[0.14563,0.92556],[0.15625,0.92556],[0.16687,0.92556],[0.1775,0.92556],[0.18812,0.92556],[0.19875,0.92556],[0.20938,0.92556],[0.22,0.92556],[0.23062,0.92556],[0.24125,0.92556],[0.25188,0.92556],[0.2625,0.92556],[0.48562,0.92556],[0.49625,0.92556],[0.50687,0.92556],[0.07125,0.94444],[0.08188,0.94444],[0.0925,0.94444],[0.10312,0.94444],[0.12437,0.94444],[0.135,0.94444],[0.14563,0.94444],[0.15625,0.94444],[0.16687,0.94444],[0.1775,0.94444],[0.18812,0.94444],[0.19875,0.94444],[0.20938,0.94444],[0.22,0.94444],[0.23062,0.94444],[0.24125,0.94444],[0.25188,0.94444],[0.2625,0.94444],[0.27313,0.94444],[0.48562,0.94444],[0.49625,0.94444],[0.50687,0.94444],[0.12437,0.96333],[0.135,0.96333],[0.14563,0.96333],[0.15625,0.96333],[0.16687,0.96333],[0.1775,0.96333],[0.18812,0.96333],[0.19875,0.96333],[0.20938,0.96333],[0.22,0.96333],[0.23062,0.96333],[0.24125,0.96333],[0.25188,0.96333],[0.2625,0.96333],[0.27313,0.96333],[0.28375,0.96333],[0.29437,0.96333],[0.475,0.96333],[0.48562,0.96333],[0.49625,0.96333],[0.12437,0.98222],[0.135,0.98222],[0.14563,0.98222],[0.15625,0.98222],[0.16687,0.98222],[0.1775,0.98222],[0.18812,0.98222],[0.19875,0.98222],[0.20938,0.98222],[0.22,0.98222],[0.23062,0.98222],[0.24125,0.98222],[0.25188,0.98222],[0.2625,0.98222],[0.27313,0.98222],[0.28375,0.98222],[0.29437,0.98222],[0.48562,0.98222],[0.49625,0.98222]];
+</script>
+  <script>
+// 1600 × 900 고정 레이아웃. 브라우저 크기가 달라져도 요소 사이의 비율과 위치는 유지됩니다.
+const stage=document.querySelector('.home');
+function fitStage(){const factor=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(${(innerWidth-1600*factor)/2}px,${(innerHeight-900*factor)/2}px) scale(${factor})`;}
+addEventListener('resize',fitStage);fitStage();
+const canvas=document.querySelector('#mapCanvas'),ctx=canvas.getContext('2d');
+const pointer={x:-9999,y:-9999,active:false};
+const dots=LAND_DOTS.map(([nx,ny])=>({nx,ny,heat:0}));
+let last=0;
+function sizeCanvas(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=1600*dpr;canvas.height=900*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+sizeCanvas();
+addEventListener('pointermove',e=>{const b=stage.getBoundingClientRect();const factor=b.width/1600;pointer.x=(e.clientX-b.left)/factor;pointer.y=(e.clientY-b.top)/factor;pointer.active=true},{passive:true});
+addEventListener('pointerout',e=>{if(!e.relatedTarget)pointer.active=false});addEventListener('blur',()=>pointer.active=false);
+const blue=[6,130,255],yellow=[255,238,0],pink=[255,0,187],deepPink=[198,0,125];
+function mix(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t))}
+function draw(time){const dt=Math.min((time-last)/16.667||1,3);last=time;ctx.clearRect(0,0,1600,900);
+for(const d of dots){
+// 지도는 원래보다 확대하고 왼쪽/위쪽으로 이동시켜 러프 스케치의 크롭을 반영합니다.
+const x=d.nx*1890-65,y=d.ny*1030-45;
+let target=0;if(pointer.active){const distance=Math.hypot(x-pointer.x,y-pointer.y);if(distance<155)target=Math.pow(1-distance/155,1.12)}
+d.heat+=(target-d.heat)*Math.min(1,(target>d.heat?.24:.055)*dt);
+const h=d.heat;const r=3.2+h*11.5;
+let rgb=h<.42?mix(blue,yellow,h/.42):h<.82?mix(yellow,pink,(h-.42)/.4):mix(pink,deepPink,(h-.82)/.18);
+ctx.fillStyle=`rgb(${rgb.join(',')})`;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+if(h>.8){ctx.fillStyle=`rgba(165,0,102,${(h-.8)*2.8})`;ctx.beginPath();ctx.arc(x,y,r*.42,0,Math.PI*2);ctx.fill()}
+}
+requestAnimationFrame(draw)}requestAnimationFrame(draw);
+</script>
+<script>
+const COUNTRIES=[{"name": "KOREA", "city": "SEOUL", "asset": "https://commons.wikimedia.org/wiki/Special:FilePath/Namsan_Tower_sunset%2C_Seoul.jpg?width=900", "paragraphs": ["한국은 동아시아의 한반도에 위치한 국가로, 오랜 역사 속에서 고유한 언어와 문화적 정체성을 발전시켜 왔습니다. 특히 15세기에 창제된 한글은 한국의 독창적인 문화유산 중 하나입니다.", "수도인 서울은 정치·경제·문화의 중심지로, 경복궁과 같은 역사적인 궁궐부터 현대적인 고층 건물까지 다양한 도시 풍경이 공존하는 곳입니다.", "한국은 한옥, 한복, 한식 등 다양한 전통문화와 자연과 계절의 변화를 중시하는 생활문화를 간직하고 있습니다. 오늘날에는 K-POP, 영화, 드라마, 패션과 뷰티 산업 등이 세계적으로도 확산되며 문화적 영향력을 넓혀가고 있습니다."]}, {"name": "CHINA", "city": "BEIJING", "asset": "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1000&q=85", "paragraphs": ["중국은 동아시아에 위치한 국가로, 큰 영토와 오랜 역사를 바탕으로 다양한 지역문화와 전통을 발전시켜 왔습니다. 여러 왕조를 거치며 형성된 철학, 문자, 예술과 건축문화는 주변 동아시아 국가에도 큰 영향을 주었습니다.", "수도인 베이징은 정치·문화의 중심지로, 자금성과 천단 같은 역사적인 건축유산과 현대적인 도시 경관이 함께 어우러진 곳입니다.", "중국은 서예, 도자기, 전통 복식 등 풍부한 문화유산을 지니고 있으며, 지역에 따라 음식과 생활양식도 다양하게 나타납니다. 오늘날에는 빠른 도시화와 기술 발전을 바탕으로 패션, 디지털 문화와 현대적인 도시문화도 발전하고 있습니다."]}, {"name": "JAPAN", "city": "TOKYO", "asset": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85", "paragraphs": ["일본은 동아시아의 태평양 연안에 위치한 섬나라로, 오랜 역사 속에서 주변 국가들과 교류하며 독자적인 문화와 생활양식을 발전시켜 왔습니다. 특히 자연과 계절의 변화를 중시하는 미적 감각은 일본의 건축과 예술에도 반영되어 있습니다.", "수도인 도쿄는 경제·문화의 중심지로, 아사쿠사의 전통적인 거리부터 시부야의 현대적인 번화가까지 다양한 도시 풍경을 보여줍니다.", "일본은 기모노, 신사와 전통 정원 등 고유한 문화를 간직하고 있으며, 지역마다 다양한 축제와 음식문화가 발달해 있습니다. 오늘날에는 애니메이션, 만화, 게임, 패션과 디자인 분야에서 세계적인 문화적 영향력을 보여주고 있습니다."]}];
+let countryIndex=0, sphereYaw=0, targetYaw=0, spherePitch=0, targetPitch=0, isHovering=false;
+const learnPage=document.getElementById('learnPage'),sphereModal=document.getElementById('sphereModal');
+const mainOrb=document.getElementById('cityOrb'),modalOrb=document.getElementById('modalOrb');
+const orbCanvases=[mainOrb.querySelector('canvas'),modalOrb.querySelector('canvas')];
+const images=COUNTRIES.map(c=>{const i=new Image();i.src=c.asset;i.onerror=()=>renderOrbs();i.onload=()=>{if(COUNTRIES[countryIndex].asset===c.asset)renderOrbs()};return i});
+function showCountry(){
+ const c=COUNTRIES[countryIndex];document.getElementById('countryTitle').textContent='ABOUT '+c.name;
+ const copy=document.getElementById('countryCopy');copy.replaceChildren(...c.paragraphs.map(s=>{const p=document.createElement('p');p.textContent=s;return p}));
+ sphereYaw=0;targetYaw=0;spherePitch=0;targetPitch=0;renderOrbs();
+}
+function openLearn(){learnPage.classList.add('is-visible');showCountry()}
+function closeLearn(){sphereModal.classList.remove('open');learnPage.classList.remove('is-visible')}
+document.querySelector('.menu-circle.learn').addEventListener('click',openLearn);
+document.getElementById('backHome').onclick=closeLearn;
+document.getElementById('backHome2').onclick=closeLearn;
+document.getElementById('countryPrev').onclick=()=>{countryIndex=(countryIndex+2)%3;showCountry()};
+document.getElementById('countryNext').onclick=()=>{countryIndex=(countryIndex+1)%3;showCountry()};
+mainOrb.onclick=()=>{};
+document.getElementById('modalClose').onclick=()=>sphereModal.classList.remove('open');
+sphereModal.addEventListener('click',e=>{if(e.target===sphereModal)sphereModal.classList.remove('open')});
+window.addEventListener('keydown',e=>{if(e.key==='Escape')sphereModal.classList.remove('open');if(learnPage.classList.contains('is-visible')&&!sphereModal.classList.contains('open')){if(e.key==='ArrowLeft')document.getElementById('countryPrev').click();if(e.key==='ArrowRight')document.getElementById('countryNext').click()}});
+function orbPointer(e,el){const rect=el.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width;targetYaw=(x-.5)*Math.PI*2.5;targetPitch=((e.clientY-rect.top)/rect.height-.5)*2.2;isHovering=true}
+for(const el of [mainOrb,modalOrb]){
+ el.addEventListener('pointermove',e=>orbPointer(e,el));
+ el.addEventListener('pointerleave',()=>{isHovering=false});
+}
+// WebGL spherical projection. A full 2:1 equirectangular image is required
+// to show a true photographic 360° environment; regular photos cannot supply missing views.
+const glViews=new Map();
+function setupGL(canvas){
+ const gl=canvas.getContext('webgl',{alpha:true,antialias:true,preserveDrawingBuffer:false});if(!gl)return null;
+ const vert=`attribute vec2 p;varying vec2 uv;void main(){uv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
+ const frag=`precision highp float;varying vec2 uv;uniform sampler2D tex;uniform float yaw;uniform float pitch;uniform float ratio;uniform float ready;
+ void main(){vec2 q=uv*2.-1.;float r=dot(q,q);if(r>1.)discard;
+ vec3 n=normalize(vec3(q.x,-q.y,sqrt(max(0.,1.-r))));
+ float cp=cos(pitch),sp=sin(pitch);n=vec3(n.x,cp*n.y-sp*n.z,sp*n.y+cp*n.z);
+ float cy=cos(yaw),sy=sin(yaw);n=vec3(cy*n.x+sy*n.z,n.y,-sy*n.x+cy*n.z);
+ float lon=atan(n.x,n.z);float lat=asin(clamp(n.y,-1.,1.));
+ vec2 st=vec2(fract(.5+lon/6.2831853),clamp(.5-lat/3.14159265,0.,1.));
+ vec4 col=texture2D(tex,st);float shade=1.-.22*pow(r,1.3);col.rgb*=shade;
+ gl_FragColor=vec4(col.rgb,1.);
+ }`;
+ function shader(type,code){const sh=gl.createShader(type);gl.shaderSource(sh,code);gl.compileShader(sh);return sh}
+ const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vert));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,frag));gl.linkProgram(program);gl.useProgram(program);
+ const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+ const loc=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+ const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+ return {gl,program,texture,loaded:-1};
+}
+function renderOrbs(){
+ const img=images[countryIndex];
+ for(const canvas of orbCanvases){
+  const c=canvas.getContext('2d');if(!c)continue;
+  const w=canvas.width,h=canvas.height;c.clearRect(0,0,w,h);
+  c.fillStyle='#d8dfe8';c.fillRect(0,0,w,h);
+  if(img.complete&&img.naturalWidth){const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);const sw=w/scale,sh=h/scale;c.drawImage(img,(img.naturalWidth-sw)/2,(img.naturalHeight-sh)/2,sw,sh,0,0,w,h)}
+  else{c.fillStyle='#3b4050';c.font='bold 44px Arial';c.textAlign='center';c.fillText(COUNTRIES[countryIndex].city,w/2,h/2)}
+ }
+}
+function animateSphere(){
+ if(learnPage.classList.contains('is-visible')){
+  sphereYaw+=(targetYaw-sphereYaw)*.055;spherePitch+=(targetPitch-spherePitch)*.055;
+  renderOrbs();
+ }
+ requestAnimationFrame(animateSphere);
+}/* static capital photograph */
+</script><script>
+// Quiz: placeholder image slots, ten questions, answer slider, and return to introduction.
+const quizPage=document.getElementById('quizPage'),quizIntro=document.getElementById('quizIntro'),quizPlaying=document.getElementById('quizPlaying');
+const quizCanvas=document.getElementById('quizReveal'),qctx=quizCanvas.getContext('2d');
+let quizStep=0,quizChoice=1,quizAnswers=[],quizPointer={x:-9999,y:-9999,active:false};
+const quizDots=[];for(let y=0;y<900;y+=19)for(let x=0;x<1600;x+=19)quizDots.push({x,y,h:0});
+function openQuiz(){learnPage.classList.remove('is-visible');quizPage.classList.add('visible');resetQuiz()}
+function resetQuiz(){quizStep=0;quizAnswers=[];quizPlaying.classList.remove('visible');quizIntro.style.display='flex';quizCanvas.style.display='block';quizPointer.active=false}
+function closeQuiz(){quizPage.classList.remove('visible');quizPointer.active=false}
+document.querySelector('.menu-circle.quiz').addEventListener('click',openQuiz);
+document.getElementById('quizHome').onclick=closeQuiz;
+document.getElementById('quizBack').onclick=resetQuiz;
+quizPage.addEventListener('pointermove',e=>{const b=quizPage.getBoundingClientRect();const scale=b.width/1600;quizPointer.x=(e.clientX-b.left)/scale;quizPointer.y=(e.clientY-b.top)/scale;quizPointer.active=true});
+quizPage.addEventListener('pointerleave',()=>quizPointer.active=false);
+function quizRevealLoop(){if(quizPage.classList.contains('visible')&&quizIntro.style.display!=='none'){
+ qctx.clearRect(0,0,1600,900);
+ for(const d of quizDots){let h=0;if(quizPointer.active){const dist=Math.hypot(d.x-quizPointer.x,d.y-quizPointer.y);h=Math.max(0,1-dist/132)}d.h+=(h-d.h)*(h>d.h?.22:.09);
+ if(d.h>.015){const rr=1+d.h*5;qctx.beginPath();qctx.arc(d.x,d.y,rr,0,Math.PI*2);qctx.fillStyle=d.h>.65?'#ff00bb':d.h>.35?'#ffff05':'#0d06fb';qctx.globalAlpha=Math.min(1,d.h*.95);qctx.fill();}}
+ qctx.globalAlpha=1;
+ }else qctx.clearRect(0,0,1600,900);requestAnimationFrame(quizRevealLoop)}quizRevealLoop();
+const quizKnob=document.getElementById('quizKnob'),quizSelect=document.getElementById('quizSelect');
+function setQuizChoice(i){quizChoice=Math.max(0,Math.min(2,Math.round(i)));quizKnob.style.left=(quizChoice*50)+'%';quizKnob.setAttribute('aria-valuenow',String(quizChoice));}
+function chooseAt(clientX){const rect=quizSelect.getBoundingClientRect();setQuizChoice(Math.round((clientX-rect.left)/rect.width*2))}
+let moving=false;
+quizSelect.addEventListener('pointerdown',e=>{moving=true;quizSelect.setPointerCapture(e.pointerId);chooseAt(e.clientX)});
+quizSelect.addEventListener('pointermove',e=>{if(moving)chooseAt(e.clientX)});
+quizSelect.addEventListener('pointerup',e=>{moving=false;chooseAt(e.clientX)});
+quizSelect.addEventListener('pointercancel',()=>moving=false);
+quizKnob.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){setQuizChoice(quizChoice+1);e.preventDefault()}if(e.key==='ArrowLeft'){setQuizChoice(quizChoice-1);e.preventDefault()}});
+function displayQuestion(){document.getElementById('quizProgress').textContent=String(quizStep+1).padStart(2,'0')+' / 10';document.getElementById('quizCount').textContent='';setQuizChoice(1);document.getElementById('quizNext').textContent=quizStep===9?'FINISH':'NEXT'}
+document.getElementById('quizStart').onclick=()=>{quizIntro.style.display='none';quizCanvas.style.display='none';quizPlaying.classList.add('visible');quizStep=0;quizAnswers=[];displayQuestion()};
+document.getElementById('quizNext').onclick=()=>{quizAnswers.push(['CHINA','KOREA','JAPAN'][quizChoice]);quizStep++;if(quizStep>=10){resetQuiz()}else displayQuestion()};
+</script>
+<script>
+/* Local images work through regular img src, including file:// on Safari and Chrome. */
+(()=>{
+ const status=document.getElementById('quizStatus'),intro=document.getElementById('quizIntro');
+ const photo=document.getElementById('quizPhoto'),photoState=document.getElementById('quizImageState');
+ const countries=['CHINA','KOREA','JAPAN'], names={CHINA:'중국',KOREA:'한국',JAPAN:'일본'};
+ const collections=Object.fromEntries(countries.map(country=>[country,Array.from({length:34},(_,i)=>({country,filename:names[country]+(i+1)+'.jpg',path:({KOREA:'images',JAPAN:'images2',CHINA:'images3'}[country])+'/'+names[country]+(i+1)+'.jpg'}))]));
+ let deck=[],step=0,answers=[],renderToken=0,resultPhotos=[],busy=false;
+ function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+ function makeDeck(){const quota=[3,3,3];quota[Math.floor(Math.random()*3)]=4;return shuffle(countries.flatMap((c,i)=>shuffle(collections[c]).slice(0,quota[i])))}
+ function showStatus(msg){status.textContent=msg;status.style.display=msg?'block':'none'}
+ function display(){
+  const item=deck[step],token=++renderToken;
+  document.getElementById('quizProgress').textContent=String(step+1).padStart(2,'0')+' / 10';
+  document.getElementById('quizCount').textContent='';document.getElementById('quizNext').textContent=step===9?'FINISH':'NEXT';
+  setQuizChoice(1);busy=true;photoState.style.display='flex';photoState.textContent='사진을 불러오는 중…';photo.style.opacity='0';
+  const src=encodeURI(item.path);const test=new Image();
+  test.onload=()=>{if(token!==renderToken)return;photo.src=src;photo.style.opacity='1';photoState.style.display='none';resultPhotos[step]=src;showStatus('');busy=false};
+  test.onerror=()=>{if(token!==renderToken)return;photo.removeAttribute('src');photoState.textContent='이미지를 찾을 수 없습니다: '+item.filename;showStatus('images / images2 / images3 폴더와 파일명을 확인해 주세요.');busy=false};
+  test.src=src;
+ }
+ document.getElementById('quizStart').addEventListener('click',e=>{
+  e.stopImmediatePropagation();deck=makeDeck();step=0;answers=[];resultPhotos=[];
+  intro.style.display='none';showStatus('');document.getElementById('quizReveal').style.display='none';document.getElementById('quizPlaying').classList.add('visible');display();
+ },true);
+ document.getElementById('quizNext').addEventListener('click',e=>{
+  e.stopImmediatePropagation();if(!deck.length||busy)return;
+  answers.push({country:deck[step].country,choice:countries[quizChoice],filename:deck[step].filename});step++;
+  if(step>=10){renderToken++;window.triShowResult(answers,resultPhotos);deck=[];document.getElementById('quizPlaying').classList.remove('visible');intro.style.display='flex';document.getElementById('quizReveal').style.display='block';showStatus('')}
+  else display();
+ },true);
+ document.getElementById('quizBack').addEventListener('click',()=>{renderToken++;deck=[];busy=false;showStatus('')},true);
+ document.querySelector('.menu-circle.quiz').addEventListener('click',()=>showStatus(''));
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4/face_mesh.js"></script>
+<script>
+/* TRI additions: screen transitions, result gallery and reusable quiz mouse reveal */
+(()=>{
+const $=id=>document.getElementById(id);
+const learnIntro=$('learnIntro'),tryIntro=$('tryIntro'),result=$('quizResult'),camera=$('tryCamera');
+let learnTimer=null;
+function hideAll(){clearTimeout(learnTimer);learnIntro.classList.remove('visible','fade-out');tryIntro.classList.remove('visible');result.classList.remove('visible');}
+function home(){hideAll();$('quizPage').classList.remove('visible');$('learnPage').classList.remove('is-visible');if(camera.classList.contains('visible'))window.triStopCamera();camera.classList.remove('visible')}
+// The original LEARN handler runs first; immediately mask it with the intro screen.
+document.querySelector('.menu-circle.learn').addEventListener('click',()=>{
+ hideAll();$('learnPage').classList.remove('is-visible');learnIntro.classList.add('visible');
+ learnTimer=setTimeout(()=>{learnIntro.classList.add('fade-out');$('learnPage').classList.add('is-visible');learnTimer=setTimeout(()=>{learnIntro.classList.remove('visible','fade-out')},570)},2500);
+});
+document.querySelector('.menu-circle.try').addEventListener('click',()=>{home();tryIntro.classList.add('visible')});
+$('learnIntroHome').onclick=home;$('tryIntroHome').onclick=home;$('resultHome').onclick=home;
+$('resultReplay').onclick=()=>{result.classList.remove('visible');$('quizPage').classList.add('visible');$('quizBack').click();$('quizStart').click()};
+window.triShowResult=(answers,photos)=>{
+ const list=$('resultAnswers');list.replaceChildren();
+ answers.forEach((answer,i)=>{const row=document.createElement('div');row.className='result-item';const img=document.createElement('img');img.className='result-photo';img.alt='퀴즈 '+(i+1)+'번 사진';if(photos[i])img.src=photos[i];const label=document.createElement('div');const n=document.createElement('span');n.className='result-number';n.textContent=String(i+1).padStart(2,'0');const country=document.createElement('span');country.className='result-caption';country.textContent=answer.country;label.append(n,country);row.append(img,label);list.append(row)});
+ $('resultScore').textContent=String(answers.filter(a=>a.country===a.choice).length);$('quizPage').classList.remove('visible');result.classList.add('visible');
+};
+// The same dots, distance and easing used by the existing QUIZ intro.
+function revealOn(page,canvas){const c=canvas.getContext('2d');let pointer={x:-999,y:-999,active:false};const dots=[];for(let y=0;y<900;y+=19)for(let x=0;x<1600;x+=19)dots.push({x,y,h:0});
+ page.addEventListener('pointermove',e=>{const b=page.getBoundingClientRect(),scale=b.width/1600;pointer.x=(e.clientX-b.left)/scale;pointer.y=(e.clientY-b.top)/scale;pointer.active=true});page.addEventListener('pointerleave',()=>pointer.active=false);
+ function loop(){if(page.classList.contains('visible')){c.clearRect(0,0,1600,900);for(const d of dots){let h=0;if(pointer.active){const dist=Math.hypot(d.x-pointer.x,d.y-pointer.y);h=Math.max(0,1-dist/132)}d.h+=(h-d.h)*(h>d.h?.22:.09);if(d.h>.015){c.beginPath();c.arc(d.x,d.y,1+d.h*5,0,Math.PI*2);c.fillStyle=d.h>.65?'#ff00bb':d.h>.35?'#ffff05':'#0d06fb';c.globalAlpha=Math.min(1,d.h*.95);c.fill()}}c.globalAlpha=1;}requestAnimationFrame(loop)}loop();}
+revealOn(learnIntro,$('learnReveal'));revealOn(tryIntro,$('tryReveal'));
+$('tryStart').onclick=async()=>{tryIntro.classList.remove('visible');camera.classList.add('visible');await window.triStartCamera()};
+$('cameraHome').onclick=home;$('cameraBack').onclick=()=>{window.triStopCamera();camera.classList.remove('visible');tryIntro.classList.add('visible')};
+})();
+</script>
+<script>
+/* Adapted from the existing MAKEUP DETAIL V6, preserving its drawing function. */
+(()=>{
+const video=document.querySelector('#tryVideo'),canvas=document.querySelector('#tryOverlay'),ctx=canvas.getContext('2d'),statusEl=document.querySelector('#cameraStatus'),range=document.querySelector('#cameraIntensity'),value=document.querySelector('#cameraValue');
+let stream,mesh,active=false,busy=false,raf=0,style='kr',session=0;
+document.querySelectorAll('#tryCamera [data-style]').forEach(b=>b.onclick=()=>{style=b.dataset.style;document.querySelectorAll('#tryCamera [data-style]').forEach(x=>x.classList.toggle('selected',x===b))});range.oninput=()=>value.textContent=range.value+'%';
+function say(s){statusEl.textContent=s}
+function halt(){session++;active=false;cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;ctx.clearRect(0,0,canvas.width,canvas.height);if(mesh){try{mesh.close()}catch(e){}mesh=null}}
+window.triStopCamera=halt;
+function draw(face,w,h){
+ const amount=Number(range.value)/100;if(amount<=0)return;
+ const p=i=>({x:face[i].x*w,y:face[i].y*h});
+ const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+ const fw=d(p(234),p(454)),fh=d(p(10),p(152));
+ const colors={
+ kr:{blush:[244,153,154],lip:[213,95,116],shadow:[186,137,123],line:[79,58,52],brow:[109,86,78]},
+ cn:{blush:[223,95,131],lip:[170,57,91],shadow:[143,91,110],line:[48,35,41],brow:[83,65,66]},
+ jp:{blush:[242,125,159],lip:[200,128,143],shadow:[173,130,127],line:[62,48,50],brow:[96,77,72]}
+ }[style];
+ const rgb=(c,a)=>`rgba(${c.join(',')},${Math.max(0,Math.min(1,a*amount))})`;
+ function blurSpot(center,rx,ry,color,alpha,rotation=0){
+  ctx.save();ctx.translate(center.x,center.y);ctx.rotate(rotation);ctx.scale(rx,ry);
+  let g=ctx.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,rgb(color,alpha));g.addColorStop(.30,rgb(color,alpha*.76));g.addColorStop(.58,rgb(color,alpha*.36));g.addColorStop(.82,rgb(color,alpha*.07));g.addColorStop(1,rgb(color,0));
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,1,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+ function trace(ids,close=true){ctx.beginPath();ids.forEach((id,i)=>{let v=p(id);i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y)});if(close)ctx.closePath()}
+ function softRegion(ids,color,opacity,blur){
+  ctx.save();ctx.shadowColor=rgb(color,opacity*.6);ctx.shadowBlur=blur;ctx.fillStyle=rgb(color,opacity*.7);trace(ids);ctx.fill();ctx.restore();
+ }
+ // Semi-transparent color is built up in multiple feathered passes, not opaque shapes.
+ const sides=[
+ {eye:[33,160,159,158,157,173,133],lower:[33,144,145,153,154,155,133],outer:33,inner:133,sign:-1,cheek:205,upperCenter:159,under:145,brow:[70,63,105,66,107]},
+ {eye:[263,387,386,385,384,398,362],lower:[263,373,374,380,381,382,362],outer:263,inner:362,sign:1,cheek:425,upperCenter:386,under:374,brow:[300,293,334,296,336]}
+ ];
+ sides.forEach(side=>{
+  const o=p(side.outer),i=p(side.inner),c=p(side.cheek),top=p(side.upperCenter),under=p(side.under),ew=d(o,i);
+  const center=style==='jp'?{x:under.x+(o.x-i.x)*.08,y:under.y+fh*.105}:style==='cn'?{x:c.x+(o.x-i.x)*.16,y:c.y-fh*.105}:{x:c.x,y:c.y+fh*.004};
+  const intensity=style==='kr'?.23:style==='cn'?.35:.42;
+  blurSpot(center,fw*(style==='jp'?.24:style==='cn'?.21:.19),fh*(style==='jp'?.12:style==='cn'?.085:.11),colors.blush,intensity,(side.sign===-1?-.12:.12));
+  blurSpot({x:center.x,y:center.y+fh*.015},fw*.13,fh*.07,colors.blush,intensity*.32);
+  // Upper eyelid gradients anchored to the eye; no flat filled polygons.
+  const lid={x:(top.x+under.x)/2,y:top.y-fh*.040};
+  blurSpot(lid,ew*.66,fh*(style==='cn'?.095:.075),colors.shadow,style==='cn'?.32:style==='jp'?.22:.13,0);
+  if(style==='cn')blurSpot({x:o.x+(i.x-o.x)*.20,y:top.y-fh*.026},ew*.38,fh*.068,[120,72,97],.19);
+  if(style==='jp'){
+   blurSpot({x:under.x,y:under.y+fh*.048},ew*.66,fh*.065,[204,126,145],.22);
+   blurSpot({x:under.x,y:under.y+fh*.015},ew*.43,fh*.022,[255,224,219],.22);
+  }
+  // Upper eyeliner: follow the lash root, not the upper eyelid contour.
+  // A smooth tapered ribbon is drawn from inner to outer corner.
+  const dir=Math.sign(o.x-i.x)||side.sign;
+  const upperRoot=(side.sign===-1?[33,161,160,159,158,157,173,133]:[263,388,387,386,385,384,398,362]).map(p);
+  function sample(points,t){const v=Math.max(0,Math.min(1,t))*(points.length-1),j=Math.min(points.length-2,Math.floor(v)),f=v-j;return{x:points[j].x*(1-f)+points[j+1].x*f,y:points[j].y*(1-f)+points[j+1].y*f}}
+  const pts=Array.from({length:41},(_,k)=>sample(upperRoot,k/40));
+  const thickness=fw*(style==='kr'?.0028:style==='cn'?.0052:.0042);
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+  for(let j=0;j<40;j++){
+   const t=j/40, a=pts[j],b=pts[j+1],fade=Math.sin(Math.PI*t)**.55;
+   ctx.beginPath();ctx.moveTo(a.x,a.y+thickness*.35);ctx.lineTo(b.x,b.y+thickness*.35);
+   ctx.strokeStyle=rgb(colors.line,(style==='kr'?.40:style==='cn'?.75:.63)*fade);
+   ctx.lineWidth=Math.max(.35,thickness*(.22+.8*fade));ctx.stroke();
+  }
+  const wing=ew*(style==='kr'?.075:style==='cn'?.22:.17);
+  const rise=fh*(style==='kr'?.006:style==='cn'?.018:.011);
+  ctx.beginPath();ctx.moveTo(o.x-dir*ew*.055,o.y+thickness*.6);
+  ctx.quadraticCurveTo(o.x+dir*wing*.45,o.y+thickness*.8,o.x+dir*wing,o.y-rise);
+  ctx.quadraticCurveTo(o.x+dir*wing*.42,o.y-rise*.3,o.x-dir*ew*.055,o.y-thickness*.3);
+  ctx.fillStyle=rgb(colors.line,style==='kr'?.42:style==='cn'?.77:.64);ctx.fill();ctx.restore();
+  // Lash clusters: each cluster shares a root direction, with feather-fine tips.
+  // Root positions follow the upper lash line, and tips curve toward the outer corner.
+  const groups=style==='kr'?11:style==='cn'?15:13;
+  for(let k=1;k<groups;k++){
+   const t=k/groups,root=sample(upperRoot,t),outerWeight=1-t;
+   const groupSize=(style==='kr'?1:style==='cn'?(k%3===0?3:2):2);
+   const base=fh*(style==='kr'?.018:style==='cn'?.032:.040)*(.75+.28*Math.sin(k*1.9)**2);
+   for(let s=0;s<groupSize;s++){
+    const offset=(s-(groupSize-1)/2)*ew*.007;
+    const len=base*(.75+.15*s+.12*outerWeight);
+    const tipX=root.x+dir*(ew*.016+len*.18)+offset*.4;
+    ctx.beginPath();ctx.moveTo(root.x+offset,root.y);
+    ctx.bezierCurveTo(root.x+offset+dir*ew*.008,root.y-len*.28,tipX-dir*ew*.005,root.y-len*.84,tipX,root.y-len);
+    ctx.strokeStyle=rgb(colors.line,(style==='kr'?.27:style==='cn'?.51:.46)*(s===0?1:.68));
+    ctx.lineWidth=Math.max(.35,fw*(style==='kr'?.0011:.00145));ctx.lineCap='round';ctx.stroke();
+   }
+  }
+  if(style!=='kr'){
+   const lower=side.lower.map(p),count=style==='jp'?11:7;
+   for(let k=1;k<count;k++){
+    const t=k/count,root=sample(lower,t),len=fh*(style==='jp'?.019:.010)*(.65+.35*Math.sin(k*1.8)**2);
+    ctx.beginPath();ctx.moveTo(root.x,root.y);ctx.quadraticCurveTo(root.x+dir*ew*.009,root.y+len*.6,root.x+dir*ew*.013,root.y+len);
+    ctx.strokeStyle=rgb(colors.line,style==='jp'?.29:.19);ctx.lineWidth=Math.max(.35,fw*.0011);ctx.stroke();
+   }
+  }
+  // Eyebrow color softly follows the existing brow; no artificial solid brow shape.
+  if(style==='cn'){
+   ctx.save();trace(side.brow,false);ctx.strokeStyle=rgb(colors.brow,.17);ctx.lineWidth=fw*.013;ctx.shadowColor=rgb(colors.brow,.18);ctx.shadowBlur=fw*.015;ctx.stroke();ctx.restore();
+  }
+ });
+ // Lip tint: feathered clipped gradient; leave the mouth opening and natural lip texture visible.
+ const outerLip=[61,40,37,0,267,270,291,321,314,17,84,91];
+ const mouthOpening=[78,81,13,311,308,402,14,178];
+ ctx.save();trace(outerLip);ctx.clip();
+ const upper=p(0),lower=p(17),mid=p(13);
+ const gradient=ctx.createLinearGradient(0,upper.y-fh*.025,0,lower.y+fh*.025);
+ gradient.addColorStop(0,rgb(colors.lip,style==='kr'?.14:.29));
+ gradient.addColorStop(.38,rgb(colors.lip,style==='kr'?.34:style==='cn'?.56:.29));
+ gradient.addColorStop(.75,rgb(colors.lip,style==='kr'?.43:style==='cn'?.62:.38));
+ gradient.addColorStop(1,rgb(colors.lip,.18));
+ ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);
+ // Dimension: softly deepen the inner upper lip and lower-lip contour.
+ blurSpot({x:mid.x,y:upper.y+fh*.012},fw*.17,fh*.027,[111,38,58],style==='cn'?.17:.09);
+ blurSpot({x:mid.x,y:lower.y-fh*.006},fw*.18,fh*.020,[127,52,72],.11);
+ // Gloss is a few tiny, broken highlights rather than one flat white stripe.
+ ctx.globalCompositeOperation='screen';
+ blurSpot({x:mid.x-fw*.045,y:mid.y+fh*.035},fw*.080,fh*.011,[255,238,232],.29);
+ blurSpot({x:mid.x+fw*.085,y:mid.y+fh*.027},fw*.045,fh*.008,[255,242,236],.22);
+ blurSpot({x:mid.x-fw*.025,y:upper.y+fh*.020},fw*.050,fh*.006,[255,227,222],.15);
+ ctx.globalCompositeOperation='source-over';
+ ctx.restore();
+ // Soft nose and cheek highlight; subtle on transparent makeup.
+ if(style==='kr'){
+  blurSpot(p(4),fw*.07,fh*.09,[255,236,222],.09);
+  blurSpot({x:p(168).x,y:p(168).y+fh*.04},fw*.055,fh*.09,[255,242,233],.07);
+ }
+}
+
+window.triStartCamera=async()=>{halt();const token=session;try{
+ say('카메라 연결 중...');if(!navigator.mediaDevices?.getUserMedia)throw Error('카메라를 사용할 수 없어요. localhost 또는 HTTPS에서 실행해 주세요.');
+ const acquired=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});if(token!==session){acquired.getTracks().forEach(t=>t.stop());return}stream=acquired;video.srcObject=stream;await video.play();if(token!==session)return;
+ if(typeof FaceMesh==='undefined')throw Error('얼굴 인식 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+ mesh=new FaceMesh({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4/'+f});mesh.setOptions({maxNumFaces:1,refineLandmarks:true,minDetectionConfidence:.5,minTrackingConfidence:.5});
+ mesh.onResults(r=>{if(token!==session)return;const w=video.videoWidth,h=video.videoHeight;if(!w||!h)return;if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}ctx.clearRect(0,0,w,h);const face=r.multiFaceLandmarks?.[0];if(face){draw(face,w,h);say('필터 적용 중')}else say('얼굴을 찾는 중... 정면을 바라봐 주세요.')});
+ active=true;async function loop(){if(!active||token!==session)return;if(!busy&&video.readyState>=2){busy=true;try{await mesh.send({image:video})}catch(e){if(token===session){halt();say('얼굴 추적 오류: '+e.message)}return}finally{busy=false}}if(active&&token===session)raf=requestAnimationFrame(loop)}say('얼굴 인식 준비 중...');loop();
+ }catch(e){if(token===session){halt();say('실행 실패: '+(e.message||String(e)))}}};
+document.querySelector('#cameraCapture').onclick=()=>{if(!video.videoWidth){say('카메라가 준비되면 사진을 찍을 수 있어요.');return}const out=document.createElement('canvas');out.width=video.videoWidth;out.height=video.videoHeight;const c=out.getContext('2d');c.translate(out.width,0);c.scale(-1,1);c.drawImage(video,0,0,out.width,out.height);c.drawImage(canvas,0,0,out.width,out.height);out.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='TRI-MAKEUP.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000)},'image/png')};
+})();
+</script>
+
+<script>
+/* Audio uses the Web Audio API: no external files and no network needed. */
+(()=>{
+let ac=null,master=null,musicTimer=null,musicEnabled=false;
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+function init(){if(!AudioCtx)return false;if(!ac){ac=new AudioCtx();master=ac.createGain();master.gain.value=.16;master.connect(ac.destination)}if(ac.state==='suspended')ac.resume().catch(()=>{});return true}
+function note(freq,duration,kind='sine',volume=.12,delay=0){if(!ac)return;const t=ac.currentTime+delay;const o=ac.createOscillator(),g=ac.createGain();o.type=kind;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.001,volume),t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(master);o.start(t);o.stop(t+duration+.03)}
+function hover(){if(!init())return;note(680,.13,'sine',.085);note(1020,.18,'sine',.035,.045)}
+function click(){if(!init())return;note(520,.15,'sine',.11);note(800,.22,'sine',.08,.07);note(1190,.29,'sine',.025,.12)}
+let lastHover=null;document.addEventListener('pointerover',e=>{const el=e.target.closest('button,.menu-circle,.country-arrow');if(!el||el===lastHover)return;lastHover=el;if(ac&&ac.state==='running')hover()});
+document.addEventListener('pointerout',e=>{const el=e.target.closest('button,.menu-circle,.country-arrow');if(el===lastHover)lastHover=null});
+document.addEventListener('click',e=>{if(e.target.closest('button,.menu-circle,.country-arrow'))click()},true);
+const musicButton=document.createElement('button');musicButton.className='audio-toggle';musicButton.textContent='♪ BGM OFF';musicButton.setAttribute('aria-label','배경 음악 켜기 또는 끄기');document.body.appendChild(musicButton);
+let seq=0;const melody=[392,493.88,587.33,493.88,349.23,440,523.25,440,329.63,392,493.88,392,293.66,369.99,440,369.99];
+function tick(){if(!musicEnabled||!ac)return;const i=seq++%melody.length;note(melody[i],.85,'sine',.035);if(i%4===0)note(melody[i]/2,1.8,'sine',.023);}
+musicButton.onclick=()=>{if(!init()){musicButton.textContent='음악 지원 안 됨';return}musicEnabled=!musicEnabled;musicButton.textContent=musicEnabled?'♪ BGM ON':'♪ BGM OFF';if(musicEnabled){tick();musicTimer=setInterval(tick,900)}else{clearInterval(musicTimer);musicTimer=null}};
+/* reuse existing navigation, avoiding duplicate handlers */
+document.querySelectorAll('#learnIntro .tri-back,#tryIntro .tri-back').forEach(b=>b.addEventListener('click',()=>{document.querySelector('.home')?.classList.remove('hidden');document.getElementById('learnIntro')?.classList.remove('visible','fade-out');document.getElementById('tryIntro')?.classList.remove('visible');document.getElementById('quizPage')?.classList.remove('visible')}));
+const resultBack=document.querySelector('#quizResult .tri-back');if(resultBack)resultBack.addEventListener('click',()=>{document.getElementById('quizResult').classList.remove('visible');document.getElementById('quizPage').classList.add('visible');document.getElementById('quizBack').click()});
+})();
+</script>
+
+<script>
+/* Lightweight interactive particles for LEARN and the score screen. */
+(()=>{
+ function attach(id,canvasId,active){
+  const host=document.getElementById(id),canvas=document.getElementById(canvasId);
+  if(!host||!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let pointer={x:-999,y:-999,on:false},particles=[];
+  host.addEventListener('pointermove',e=>{
+   const rect=host.getBoundingClientRect();
+   pointer.x=(e.clientX-rect.left)*1600/rect.width;
+   pointer.y=(e.clientY-rect.top)*900/rect.height;
+   pointer.on=true;
+   if(particles.length<85 && Math.random()<.52){
+    particles.push({x:pointer.x+(Math.random()-.5)*28,y:pointer.y+(Math.random()-.5)*28,r:1.5+Math.random()*3,life:1,vx:(Math.random()-.5)*1.5,vy:-.3-Math.random()*1.1});
+   }
+  });
+  host.addEventListener('pointerleave',()=>pointer.on=false);
+  function tick(){
+   ctx.clearRect(0,0,1600,900);
+   if(active()){
+    if(pointer.on){
+     for(let ring=0;ring<3;ring++){
+      const radius=22+ring*24;
+      ctx.beginPath();ctx.arc(pointer.x,pointer.y,radius,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(73,166,218,${.12-ring*.028})`;ctx.lineWidth=1.2;ctx.stroke();
+     }
+    }
+    for(const p of particles){
+     p.x+=p.vx;p.y+=p.vy;p.life-=.018;
+     ctx.beginPath();ctx.arc(p.x,p.y,Math.max(.1,p.r*p.life),0,Math.PI*2);
+     ctx.fillStyle=`rgba(94,181,222,${Math.max(0,p.life)*.55})`;ctx.fill();
+    }
+    particles=particles.filter(p=>p.life>0);
+   }else{particles=[];pointer.on=false}
+   requestAnimationFrame(tick);
+  }
+  tick();
+ }
+ attach('learnPage','learnAmbient',()=>document.getElementById('learnPage').classList.contains('is-visible'));
+ attach('quizResult','resultAmbient',()=>document.getElementById('quizResult').classList.contains('visible'));
+})();
+</script>
+</body></html>
